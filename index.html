@@ -1,0 +1,2123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Ledger of the Golden Sheaf | IA 280</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --panel:#ffffff; --ink:#12161c; --muted:#5c6773;
+    --line:#dde2e8; --accent:#0b7285; --accent-ink:#ffffff;
+    --chip:#eef2f6; --dim:#aab4c0;
+    --warm:#a8560b; --bad:#a3202c; --good:#1c6b3f; --gold:#8a6d1f;
+    --paper:#fbf7ee; --paper-ink:#2c2418; --paper-line:#e3d9c4;
+    --shadow:0 1px 2px rgba(16,24,40,.06),0 8px 24px rgba(16,24,40,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0e1218; --panel:#161c24; --ink:#e8edf3; --muted:#98a4b3;
+      --line:#26303c; --accent:#39c0d3; --accent-ink:#08121a;
+      --chip:#1d2731; --dim:#4b5866;
+      --warm:#e0a45c; --bad:#f0788a; --good:#5fd39b; --gold:#d8b45e;
+      --paper:#1b1a16; --paper-ink:#e7dcc6; --paper-line:#3a352a;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    padding:24px 16px 64px;
+  }
+  .wrap{max-width:820px;margin:0 auto}
+  header{margin-bottom:16px}
+  h1{font-size:1.45rem;margin:0 0 4px;letter-spacing:-.01em}
+  .sub{color:var(--muted);font-size:.9rem;margin:0}
+  .tabs{display:flex;gap:4px;margin:16px 0 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .tabs button{
+    background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);
+    font:inherit;font-size:.92rem;font-weight:600;padding:8px 12px;cursor:pointer;margin-bottom:-1px;
+  }
+  .tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:22px;box-shadow:var(--shadow);}
+
+  .meters{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 14px}
+  .meter{flex:1 1 150px;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:9px 13px;box-shadow:var(--shadow);}
+  .meter .lab{font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+  .meter .val{font-size:1.3rem;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .meter .val.low{color:var(--bad)}
+  .meter .val.gold{color:var(--gold)}
+  .meter .note{font-size:.75rem;color:var(--muted)}
+  .bar{height:5px;background:var(--chip);border-radius:99px;overflow:hidden;margin-top:5px}
+  .bar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .35s ease}
+  .bar i.low{background:var(--bad)} .bar i.gold{background:var(--gold)}
+
+  .kicker{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--accent);margin:0 0 8px;}
+  .q{font-size:1.2rem;font-weight:650;margin:0 0 10px;letter-spacing:-.01em}
+  .body p{margin:0 0 11px}
+  .body em{color:var(--muted)}
+  .body em.def{color:inherit}
+
+  figure{margin:0 0 14px}
+  figure img{width:100%;height:auto;display:block;border-radius:9px;border:1px solid var(--line)}
+  figcaption{font-size:.76rem;color:var(--muted);margin-top:5px;line-height:1.4}
+
+  .says{display:flex;gap:12px;align-items:flex-start;margin:0 0 13px;
+    background:var(--chip);border-radius:10px;padding:12px 14px;border-left:3px solid var(--accent)}
+  .who{flex:0 0 38px;height:38px;border-radius:50%;display:grid;place-items:center;
+    font-weight:700;font-size:.8rem;color:#fff;background:var(--accent);}
+  .who.lib{background:#2f6f4e} .who.arc{background:#5a4a86}
+  .who.grp{background:#a8560b} .who.cim{background:#0f6d78}
+  .says .txt{flex:1}
+  .says .nm{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:2px}
+  .says p{margin:0 0 7px} .says p:last-child{margin:0}
+
+  .cat{background:var(--paper);color:var(--paper-ink);border:1px solid var(--paper-line);
+    border-radius:8px;padding:13px 15px;margin:0 0 13px;font-size:.88rem;}
+  .cat .ttl{font-weight:700;margin:0 0 6px}
+  .cat dl{display:grid;grid-template-columns:auto 1fr;gap:2px 14px;margin:0}
+  .cat dt{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.65;padding-top:3px}
+  .cat dd{margin:0}
+  .cat .tree{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.8rem;line-height:1.65;margin:8px 0 0}
+  .cat .tree .sel{background:var(--accent);color:var(--accent-ink);padding:1px 5px;border-radius:4px}
+  .cat .off{opacity:.55}
+
+  .found{border-left:3px solid var(--gold);background:var(--chip);padding:12px 14px;
+    border-radius:0 8px 8px 0;margin:0 0 13px}
+  .found .ft{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
+  .found strong{color:var(--gold)}
+
+  .choices{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+  .choices button{font:inherit;cursor:pointer;padding:11px 14px;border-radius:9px;
+    border:1px solid var(--line);background:var(--chip);color:var(--ink);text-align:left;
+    display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%}
+  .choices button:hover{border-color:var(--accent)}
+  .choices button.locked{opacity:.55;cursor:not-allowed;border-style:dashed}
+  .choices button.locked:hover{border-color:var(--line)}
+  .choices button .cl{font-weight:600}
+  .choices button .cm{display:block;font-weight:400;font-size:.84rem;color:var(--muted);margin-top:2px}
+  .cost{flex:0 0 auto;font-size:.72rem;font-weight:700;white-space:nowrap;
+    padding:3px 8px;border-radius:99px;background:var(--panel);border:1px solid var(--line);color:var(--muted)}
+  .cost.free{color:var(--good)} .cost.pay{color:var(--warm)} .cost.heavy{color:var(--bad)}
+  .cost.lock{color:var(--gold)}
+
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .btnrow button{font:inherit;font-weight:600;cursor:pointer;padding:9px 15px;border-radius:9px;
+    border:1px solid var(--line);background:var(--chip);color:var(--ink)}
+  .btnrow button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  input[type=text]{font:inherit;padding:10px 12px;border-radius:9px;border:1px solid var(--line);
+    background:var(--panel);color:var(--ink);width:170px}
+
+  .verdict{border-radius:10px;padding:14px 16px;margin:0 0 13px;border:1px solid var(--line);background:var(--chip)}
+  .verdict.good{border-left:3px solid var(--good)}
+  .verdict.mixed{border-left:3px solid var(--warm)}
+  .verdict.bad{border-left:3px solid var(--bad)}
+  .verdict.gold{border-left:3px solid var(--gold)}
+  .plan{background:var(--paper);color:var(--paper-ink);border:1px solid var(--paper-line);
+    border-radius:8px;padding:15px;font-size:.86rem;white-space:pre-wrap;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;line-height:1.55}
+  .log{font-size:.85rem;color:var(--muted)} .log li{margin-bottom:3px}
+  h2{font-size:1.02rem;margin:20px 0 8px} h2:first-child{margin-top:0}
+  .srcs{font-size:.88rem} .srcs li{margin-bottom:7px}
+  .foot{color:var(--muted);font-size:.8rem;margin-top:24px;border-top:1px solid var(--line);padding-top:13px}
+  code{background:var(--chip);padding:1px 5px;border-radius:4px;font-size:.88em}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>The Ledger of the Golden Sheaf</h1>
+  <p class="sub">An archival expedition in which almost nothing goes as promised. IA 280 Research Methods.</p>
+</header>
+
+<div class="tabs" role="tablist">
+  <button role="tab" id="tab-play" aria-selected="true" onclick="setTab('play')">Play</button>
+  <button role="tab" id="tab-notes" aria-selected="false" onclick="setTab('notes')">What was real</button>
+  <button role="tab" id="tab-cred" aria-selected="false" onclick="setTab('cred')">Picture credits</button>
+</div>
+
+<div id="panel-play">
+  <div class="meters" id="meters"></div>
+  <div class="card" id="stage"></div>
+  <div class="btnrow">
+    <button onclick="askFunding()" id="fundbtn">Ask for research funding</button>
+    <button onclick="restart()">Start over</button>
+    <button onclick="toggleLog()" id="logbtn">Show my route</button>
+  </div>
+  <div class="card" id="logcard" hidden style="margin-top:12px">
+    <h2>Where I've been</h2>
+    <ol class="log" id="logbody"></ol>
+  </div>
+</div>
+
+<div id="panel-notes" hidden>
+  <div class="card">
+    <h2>The conspiracy is made up. The archives are real.</h2>
+    <p>There is no Order of the Golden Sheaf, and there is no lost ledger. Every <em>archive</em> in
+    this game is real, though. The catalog screens were built from the real catalog in August 2026
+    and checked against it again in October, not invented.</p>
+    <p>What's <em>inside</em> the folders is a different story. Nobody who worked on this game has
+    sat in that reading room and read them, so the memo on page 26, the projector letters, and
+    everything in the side threads are made up. So are two entries in the folder lists: the stray
+    folder in Miscellany and the second J. G. Harrar. They're there to show you the kinds of
+    things that archives hold. Use this game for how archives work, and not for what Harrar
+    actually wrote or what his files actually contain.</p>
+    <ul class="srcs">
+      <li><strong>Rockefeller Foundation records</strong>: 7,522.48 cubic feet, 1906-2017 (bulk
+      1924-1990), in 28 record groups. As of October 2026, none of those record groups was flagged
+      in the catalog as having content available online.</li>
+      <li><strong>J. George Harrar papers</strong>: 21.57 cubic feet, 1906-1982 (bulk 1958-1982),
+      in four series: Correspondence; Speeches, Manuscripts and Publications; Miscellany; and
+      photographs.</li>
+      <li><strong>Series 1</strong> has five subseries: Outgoing, <em>Confidential</em>, General,
+      Collateral Interests, and Relating to Written Materials. The Confidential subseries holds 23
+      folders described only by date.</li>
+      <li><strong>The access note really does say "Open for research."</strong> That's the trick
+      the whole game turns on.</li>
+      <li><strong>Access</strong>: you need an appointment, booked at least three days ahead. The
+      reading room is open Monday to Friday, 9:30 to 5:00. It's pencils and laptops only (no
+      pens), and one folder at a time with an OUT card. Photography is generally permitted.
+      Material stored off-site can take up to ten business days to retrieve.</li>
+      <li><strong>Digitization on request</strong>: reference scans are free and capped at 10
+      requests per researcher per calendar year, and the Center "endeavors to fulfill all
+      digitization requests within 120 business days."</li>
+    </ul>
+    <p><em>To be precise about one thing: the Rockefeller Archive Center does digitize on request,
+    and it does host some material online. The narrow, true claim this game makes is that these
+    record groups aren't sitting on the web waiting to be read.</em></p>
+    <p><em>And one more honest note. The real finding aid says the Harrar papers mostly cover his
+    activities outside the Foundation, and that the Confidential files were originally labeled
+    "Confidential" or "Personal." Whether anything like that memo is in there is exactly the kind
+    of thing a finding aid can't tell you. You'd have to go and look.</em></p>
+
+    <h2>Where the disasters come from</h2>
+    <p>The things that go wrong aren't invented, either. Most of them happen, in nearly this form,
+    in three pages of:</p>
+    <p style="padding-left:1em;border-left:3px solid var(--accent)">Jensenius, F. R. (2014). The
+    fieldwork of quantitative data collection. <em>PS: Political Science &amp; Politics</em>,
+    47(2), 402-404.</p>
+    <ul class="srcs">
+      <li>The credential loop, where you need an entry pass to meet the person who issues entry
+      passes.</li>
+      <li>Gatekeeping with no procedure behind it, decided on the spot.</li>
+      <li>Five days of being sent from official to official, when the real reason for the refusal
+      was a fear that she would find out the data were poor quality.</li>
+      <li>Being refused because a <em>previous</em> researcher broke the rules.</li>
+      <li>Records that never existed, then were never archived, then had burned, and were later
+      found, unrecognized, in another archive. Her rule: always look for yourself.</li>
+      <li>A kindly pre-compiled table in which many figures were simply wrong.</li>
+      <li>The spreadsheet in which every row read 100%.</li>
+    </ul>
+    <p><em>Jensenius cites Brooke Harrington on the social psychology of access. That's the same
+    Harrington we'll read for the ethnography session. Getting in is a problem whatever kind of
+    data you're after.</em></p>
+    <p>The side threads (the film cans, the Facebook group, the garage, the country house, and the
+    mate) are borrowed, with the details changed, from things that happened to colleagues of mine
+    who work in archives.</p>
+    <p class="foot">No network requests. Nothing leaves your browser, except for the one moment
+    when the game asks you to go and look something up yourself.</p>
+  </div>
+</div>
+
+<div id="panel-cred" hidden>
+  <div class="card">
+    <h2>Picture credits</h2>
+    <p>All photographs are from Wikimedia Commons, reproduced under the licenses shown. If the
+    <code>img</code> folder is missing, the game runs perfectly well without them.</p>
+    <ul class="srcs" id="credlist"></ul>
+  </div>
+</div>
+
+</div>
+
+<script>
+/* ============================================================
+   Images -- degrade gracefully if the img/ folder is absent
+   ============================================================ */
+const PIC = {
+  stacks:{f:"stacks.jpg", cap:"Boxes of documents on repository shelving. The National Archives (United Kingdom), CC BY 3.0."},
+  stacks2:{f:"stacks2.jpg", cap:"Document stacks in a repository. The National Archives (United Kingdom), CC BY 3.0."},
+  cardcatalog:{f:"cardcatalog.jpg", cap:"A subject card catalog. Dr. Marcus Gossler, CC BY-SA 3.0."},
+  readingroom:{f:"readingroom.jpg", cap:"Main Reading Room, Library of Congress. Carol M. Highsmith, no known restrictions."},
+  microfilm:{f:"microfilm.jpg", cap:"A microfilm reader. Abigail Elder, CC BY 2.0."},
+  lecumberri:{f:"lecumberri.jpg", cap:"Mexico's national archive, housed in the former Lecumberri prison. The dome is the old panopticon watchtower. vladimix, CC BY-SA 2.0."},
+  borlaug:{f:"borlaug.jpg", cap:"Norman Borlaug, who worked on the Foundation's Mexican wheat program. Ben Zinner, USAID, public domain."}
+};
+function pic(key){
+  const p=PIC[key]; if(!p) return '';
+  return '<figure><img src="img/'+p.f+'" alt="" loading="lazy" '+
+         'onerror="this.closest(\'figure\').remove()"><figcaption>'+p.cap+'</figcaption></figure>';
+}
+
+/* ============================================================
+   State
+   ============================================================ */
+const START={weeks:7, dollars:150};
+let S, log, logOpen=false;
+function reset(){ S={weeks:START.weeks,dollars:START.dollars,at:'s_open',flags:new Set(),finds:new Set(),sources:new Set()}; log=[]; }
+
+/* Named lateral discoveries. The point of the whole exercise.
+   Everything before the first ": " is the short name the meter shows. */
+const FINDS={
+  diaries:"Officers' diaries: a whole genre of source you didn't know existed",
+  cardcat:"The Foundation's own card catalog: the archive of the archive",
+  photos:"Series 1019: photographs of the people who were actually in the room",
+  projector:"Four pages about a broken film projector: the trace of a film program nobody studies",
+  misfiled:"A folder misfiled in 1971 and never put back",
+  rejects:"The rejected applications: a refusal has to give a reason, and an approval doesn't",
+  gossip:"What the office actually says, which no catalog records",
+  ghost:"A second J. G. Harrar, and the wrong man's file",
+  reels:"Nine film cans nobody has ever cataloged",
+  family:"A family scrapbook that exists because somebody's mother kept it",
+  trove:"A stranger's garage in Ohio, full of 1964",
+  fellowship:"A corporate archive that would like to feed you dinner",
+  rapport:"What three afternoons of drinking mate actually bought"
+};
+const findShort = f => FINDS[f].split(': ')[0];
+
+/* Threads that open only if you found the thing that starts them. */
+const LEADS=[
+  {to:"l_film_start", need:"projector", cost:{weeks:1},
+   label:"The film program", teaser:"Four pages about a projector aren't nothing"},
+  {to:"l_fb_start", need:"photos", cost:{weeks:1},
+   label:"The people in the photographs", teaser:"Somebody in that room is still alive"},
+  {to:"l_ebay_start", need:"misfiled", cost:{},
+   label:"Somebody is selling a dead man's paperwork", teaser:"It isn't in an archive. It's for sale"},
+  {to:"l_estate_start", need:"rejects", cost:{weeks:1},
+   label:"A company that keeps appearing", teaser:"Some archives have a wine cellar"},
+  {to:"l_mate_start", need:"gossip", cost:{weeks:2},
+   label:"Buenos Aires", teaser:"A reading room where the work isn't the work"}
+];
+
+/* ============================================================
+   Scenes
+   ============================================================ */
+const SC={
+
+/* ---------- ACT 0 -- THE SUMMONS ---------- */
+s_open:{
+  act:"The summons",
+  title:"Your predecessor left in a hurry.",
+  body:`<p>The research assistantship came with a desk, a filing cabinet, and a note taped inside
+    the top drawer. The student who had the job before you is gone. (To Denver. She got a job.
+    Nobody is missing.)</p>
+    <p>Here's the note, in full:</p>`,
+  cat:{title:"Note, undated, taped inside a drawer", dl:[["Text",
+    "<em>“It's real. The Ledger of the Golden Sheaf. They decided which countries would be fed and which wouldn't, in a room, in advance, and they wrote it down. It's in the boxes. Confidential series.”<br>R.</em>"]]},
+  body2:`<p>So you have inherited one legend, one filing cabinet, and one deadline.</p>`,
+  choices:[{label:"Naturally, you're going to look for it.", to:"s_brief"}]
+},
+
+s_brief:{
+  act:"The summons",
+  title:"The terms of the expedition.",
+  body:`<p>You are hunting a document that would prove a small group of people decided, in advance
+    and behind closed doors, which countries got the Rockefeller Foundation's agricultural
+    programs, the ones we now call the Green Revolution.</p>
+    <p>It's <strong>Friday, October 16</strong>. Your report is due <strong>Friday, December
+    4</strong>, which gives you seven weeks. You have about <strong>$150</strong>, and it's your
+    own money, not a grant's. Nobody is flying you anywhere. There is no helicopter.</p>
+    <p>There is also a third thing you'll want to keep an eye on, and it is the one nobody tells
+    you about in advance.</p>`,
+  choices:[{label:"What third thing?", to:"s_third"}]
+},
+
+s_third:{
+  act:"The summons",
+  title:"Things you weren't looking for.",
+  body:`<p>Ask anyone who works in archives what the job is actually like, and you'll hear pretty
+    much the same thing: <strong>the best material is almost never the material you came
+    for.</strong> It is in the next folder, or it is the thing filed beside the thing, or it is the
+    note in the margin about something else entirely.</p>
+    <p>The counter marked <em>Things you weren't looking for</em> goes up when you wander. Of
+    course, wandering costs weeks, and weeks are the one thing you can't buy more of.</p>
+    <p>That tension is the whole game, and it is also the whole job.</p>`,
+  choices:[{label:"Here we go!", to:"a1_start"}]
+},
+
+/* ---------- ACT I -- THE THRESHOLD ---------- */
+a1_start:{
+  act:"Act I: The threshold",
+  title:"An hour, and four ways to spend it.",
+  body:`<p>Okay, so you have a legend, a filing cabinet, and an internet connection.</p>`,
+  choices:[
+    {label:"Search the web for the Ledger of the Golden Sheaf.", mini:"Obviously.", to:"a1_web"},
+    {label:"Email the college's research librarian.", mini:"Feels a bit like giving up in hour one.", to:"a1_lib"},
+    {label:"Email the Foundation's archive and ask what they have.", mini:"Go straight to the source.", to:"a1_cold", cost:{weeks:1}},
+    {label:"Read three good historians and mine their footnotes.", mini:"Slow, and not very glamorous.", to:"a1_foot"}
+  ]
+},
+
+a1_web:{
+  act:"Act I", title:"The internet has opinions.",
+  body:`<p>You turn up four forum threads, a documentary trailer, and a website with a black
+    background and three different typefaces, which asserts that the Green Revolution was
+    engineered by nine families. There are also about three hundred photographs of wheat.</p>
+    <p>What you don't find, anywhere, is a document. There is not one piece of paper written by
+    anyone who actually made a decision.</p>
+    <p>You do come away with two things, though. One is a link, buried in a forum thread, to the
+    online catalog of the Rockefeller Archive Center, which nobody in the thread seems to have
+    opened. The other is a list of names, and names are worth more than they look, because
+    <strong>archives are organized by who created the records, not by what the records are
+    about.</strong></p>`,
+  gain:['names'],
+  choices:[{label:"So whose papers do I want?", to:"a1_regroup"}]
+},
+
+a1_lib:{
+  act:"Act I", speaker:{cls:"lib",name:"The research librarian",initials:"RL"},
+  title:"She replies in forty minutes and takes the mystery apart.",
+  says:`<p>"Rockefeller Archive Center. Their catalog is called DIMES, it's free, and it's the
+    best-organized thing in this whole field."</p>
+    <p>"Two warnings. Search for <em>people and organizations</em>, not topics, because archives
+    are arranged by who made the records. And nobody said 'Green Revolution' until 1968, so if you
+    see it on a 1963 file, somebody added it later."</p>
+    <p>"Also, there's no such thing as the Ledger of the Golden Sheaf. There is a Confidential
+    correspondence subseries, which is a different and more interesting thing."</p>`,
+  body:`<p>That took forty minutes and cost you nothing, and she's just saved you a couple of
+    weeks. Not bad, huh?</p>`,
+  gain:['names','librarian'],
+  choices:[{label:"Open the catalog.", to:"a1_regroup"}]
+},
+
+a1_cold:{
+  act:"Act I", speaker:{cls:"arc",name:"Reference archivist",initials:"RA"},
+  title:"A week later, a courteous and completely unhelpful reply.",
+  says:`<p>"Thank you for your interest in the Rockefeller Archive Center."</p>
+    <p>"Our holdings on agricultural development are extensive. The Rockefeller Foundation records
+    alone exceed 7,500 cubic feet. To assist you, I would need to know which <em>collection</em>,
+    and ideally which <em>series</em>, you wish to consult. Our online catalog, DIMES, is the place
+    to find that out."</p>
+    <p>"I am not able to comment on the Ledger of the Golden Sheaf."</p>`,
+  body:`<p>This is a little bit like walking into a library and asking for "books, please." The
+    archivist is not being difficult. An archivist can only answer a question that is specific
+    enough to look up, and nobody had told you that yet.</p>
+    <p>A week of your seven is gone.</p>`,
+  gain:['burned_archivist'],
+  choices:[{label:"Learn something first, then.", to:"a1_regroup"}]
+},
+
+a1_foot:{
+  act:"Act I", title:"You read the footnotes instead of the articles.",
+  body:`<p>You pick three good historians, and every one of them cites the same place: the
+    Rockefeller Archive Center in Sleepy Hollow, New York. Their notes give collections, series,
+    and box numbers.</p>
+    <p>One of them cites something called the <em>J. George Harrar papers</em> eleven times.</p>
+    <p>This is the cheapest trick in research, and it's a handy one. Somebody already did the hard
+    part of finding out where the paper lives, and then printed the address in the back of their
+    book.</p>`,
+  gain:['names','footnotes'],
+  choices:[{label:"Open the catalog.", to:"a1_regroup"}]
+},
+
+a1_regroup:{
+  act:"Act I", title:"Anything else before you go in?",
+  body:`<p>Anything you haven't tried yet is still on the table, and it won't cost you a thing.</p>`,
+  choices:[
+    {label:"Email the research librarian.", to:"a1_lib", hideIf:'librarian'},
+    {label:"Mine some footnotes.", to:"a1_foot", hideIf:'footnotes'},
+    {label:"Enough preparation. Into the catalog.", to:"a2_search"}
+  ]
+},
+
+/* ---------- ACT II -- THE LABYRINTH ---------- */
+a2_search:{
+  act:"Act II: The labyrinth",
+  title:"DIMES, the Rockefeller Archive Center's online catalog. One search box.",
+  body:`<p>It is a single field, and behind it sit several million pieces of paper.</p>
+    <p>The box doesn't search the paper, though. It searches the <strong>finding aids</strong>,
+    which are <em class="def">the archive's own written descriptions of what each collection holds
+    and how it is arranged</em>.</p>`,
+  choices:[
+    {label:'"golden sheaf ledger"', mini:"Worth a try.", to:"a2_sheaf"},
+    {label:'"green revolution"', mini:"The name of the thing.", to:"a2_vocab"},
+    {label:'"Mexican Agricultural Program"', mini:"What it was called at the time.", to:"a2_big"},
+    {label:'"Harrar"', mini:"A man who was there.", to:"a2_big", requires:'names'},
+    {label:'"farmers Mexico 1960s"', mini:"The people it happened to.", to:"a2_farmers_early"}
+  ]
+},
+
+a2_sheaf:{
+  act:"Act II", title:"Zero results.",
+  body:`<p>Not "few." Zero. The catalog does not even offer you a helpful alternative spelling.</p>
+    <p>Somewhere in that building is a person whose job is to describe things accurately, and they
+    have never once been tempted to write the words <em>Golden Sheaf</em>.</p>
+    <p>Let's notice what just happened, because it will happen to you again in real life:
+    <strong>the name your source used for a thing is not the name the archive uses.</strong>
+    Legends, nicknames, and later coinages do not show up in finding aids, because only the words
+    the filing clerk wrote do.</p>`,
+  gain:['sheaf_zero'],
+  choices:[{label:"Try again in the archive's own language.", to:"a2_search"}]
+},
+
+a2_vocab:{
+  act:"Act II", title:"Thin results, all of them the wrong shape.",
+  body:`<p>You get a few oral histories recorded in the 1990s and one retrospective report, but
+    nothing from the 1960s at all.</p>
+    <p>Why so little? Well, <strong>the phrase "Green Revolution" was coined in 1968</strong>, near
+    the end of the story. The people making these decisions in 1963 did not know they were doing a
+    Green Revolution. As far as they were concerned, they were just running an agricultural
+    program.</p>
+    <p>So here's a rule of thumb: <strong>a finding aid speaks the vocabulary of the records, not
+    yours.</strong></p>`,
+  gain:['vocab'],
+  choices:[{label:"Search in their words.", to:"a2_search"}]
+},
+
+a2_farmers_early:{
+  act:"Act II", title:"Almost nothing, and the nothing has a shape.",
+  body:`<p>There's a handful of photographs, captioned by the photographer, and some survey
+    summaries inside program reports, compiled by the program.</p>
+    <p>You are searching for the people the program was aimed at, inside the records of the
+    organization that ran it. They are in there, but only as subjects described by somebody else,
+    and never as the authors.</p>
+    <p>Hold on to that, because it comes back later, and it is the most important thing in
+    here.</p>`,
+  gain:['farmers_early'],
+  choices:[{label:"Search again.", to:"a2_search"}]
+},
+
+a2_big:{
+  act:"Act II", title:"And there it is. All of it.",
+  cat:{title:"Rockefeller Foundation records", dl:[
+    ["Dates","1906-2017 (bulk 1924-1990)"],
+    ["Size","<strong>7,522.48 cubic feet</strong>"],
+    ["Contents","28 record groups"],
+    ["Online","<span class='off'>No digitized content</span>"]]},
+  pic:"stacks",
+  body:`<p>Seven and a half thousand cubic feet is not a shelf of boxes. It is a warehouse of
+    them.</p>
+    <p>The archive sorts all of it into 28 <strong>record groups</strong>, which are <em
+    class="def">the big top-level bins, usually one for each office or function that created the
+    records</em>.</p>
+    <p>And here's the line that should stop you: <strong>not one of those 28 record groups is
+    flagged as having digitized content.</strong> Not some of them. None.</p>`,
+  gain:['scale'],
+  choices:[
+    {label:"Go through the 28 record groups properly.", mini:"Be thorough.", to:"a2_maze", cost:{weeks:1}},
+    {label:"Skip the institution. Go straight to one man's papers.", mini:"The Mexico program had a director, J. George Harrar.", to:"a3_harrar"}
+  ]
+},
+
+a2_maze:{
+  act:"Act II", title:"Twenty-eight record groups. Which door?",
+  body:`<p>Every one of them is plausible, and several are enormous in their own right. You've
+    already spent the week, so you may as well look around properly.</p>
+    <p>Remember where you are, though. This is the catalog, so all you can read is what the archive
+    has written <em>about</em> each record group. You can't read a page of what's inside.</p>`,
+  choices:[
+    {label:"Projects (Grants): the money going out.", to:"a2_rg_projects"},
+    {label:"Officers' Diaries.", mini:"Kind of an odd name for a record group.", to:"a2_rg_diaries"},
+    {label:"Card Catalog.", mini:"An index? Of what?", to:"a2_rg_cardcat"},
+    {label:"Field Offices.", to:"a2_rg_field"},
+    {label:"China Medical Board.", mini:"Wrong continent, surely.", to:"a2_rg_china"},
+    {label:"Stop wandering. Go to Harrar's papers.", to:"a3_harrar"}
+  ]
+},
+
+a2_rg_projects:{
+  act:"Act II", title:"Grant files. Thousands of them.",
+  body:`<p>The description promises a file for every grant the Foundation ever made, with the
+    reports and assessments attached. It is exactly the right kind of material, and there is an
+    unusable amount of it, organized by grant number, which you don't have.</p>
+    <p>You need a way in: a name, a date, a country. This is what we mean when we say that an
+    archive isn't searchable in the way you'd like it to be.</p>`,
+  choices:[
+    {label:"Look at what got turned down instead.", mini:"Just a hunch.", to:"a2_rejects"},
+    {label:"Back to the list.", to:"a2_maze"}
+  ]
+},
+
+a2_rejects:{
+  act:"Act II", title:"The applications they said no to.",
+  find:"rejects",
+  body:`<p>The Foundation kept the applications it turned down, and the archive files them as a
+    record group of their own, called Declinations.</p>
+    <p>You can't read a single one of them from here. All the catalog gives you is a folder list,
+    which tells you who asked and when. Still, you came looking for a secret record of how they
+    chose, and what you have found is an open record of how they <em>refused</em>. That's pretty
+    handy, because a refusal has to give a reason, where an approval can simply happen.</p>
+    <p><strong>If anything in that building states the selection criteria plainly, it's probably
+    the rejections.</strong> Nobody told you to look here, and this is exactly what wandering is
+    for.</p>`,
+  choices:[{label:"Back to the list.", to:"a2_maze"}]
+},
+
+a2_rg_diaries:{
+  act:"Act II", title:"They kept diaries?",
+  find:"diaries",
+  body:`<p>They did! According to the catalog, officers of the Foundation wrote daily diaries: who
+    they met, what was said, what they thought of it. The diaries were filed, they were kept, and
+    they're open.</p>
+    <p>You were hunting a single secret ledger. What we actually have is better and stranger: a
+    running, first-person account of the meetings themselves, written by the people in the room,
+    because writing it down was their job.</p>
+    <p><strong>Conspiracies require secrecy. Bureaucracies require minutes.</strong> Of the two,
+    the minutes are a lot more useful to a historian.</p>`,
+  choices:[{label:"Back to the list.", to:"a2_maze"}]
+},
+
+a2_rg_cardcat:{
+  act:"Act II", title:"The Foundation's own finding aids, kept as a collection.",
+  find:"cardcat", pic:"cardcatalog",
+  body:`<p>These are physical cards, the index that the Foundation's own records staff used until
+    the late 1990s, preserved as an archival collection in its own right.</p>
+    <p>Sit with that for a second, because it's pretty cool. <strong>This is a catalog of how the
+    organization classified itself</strong>: which topics got their own card, which were lumped
+    together, what counted as a subject at all. It is evidence about the institution's mind, and it
+    survives only because somebody decided not to throw the drawers away.</p>`,
+  choices:[{label:"Back to the list.", to:"a2_maze"}]
+},
+
+a2_rg_field:{
+  act:"Act II", title:"Field office records.",
+  body:`<p>These are the offices that actually ran the programs, filed by country. The material is
+    genuinely promising and genuinely large, and you'd need a specific country and year to get into
+    it usefully.</p>
+    <p>You'll want to note it down. This is the kind of lead that is worth more in week two than in
+    week six.</p>`,
+  gain:['knows_field'],
+  choices:[{label:"Back to the list.", to:"a2_maze"}]
+},
+
+a2_rg_china:{
+  act:"Act II", title:"Wrong continent. Right lesson.",
+  body:`<p>The China Medical Board is a medical education program, and it has nothing to do with
+    wheat in Mexico.</p>
+    <p>What it does have is a structure identical to the one you're looking for: an American
+    foundation deciding, from New York, what another country needed. It is a different decade and a
+    different continent, but it's the same shape.</p>
+    <p>So it is not your evidence, but it might be your comparison case, which is a thing you
+    didn't have five minutes ago.</p>`,
+  gain:['china_parallel'],
+  choices:[{label:"Back to the list.", to:"a2_maze"}]
+},
+
+/* ---------- ACT III -- THE DESCENT ---------- */
+a3_harrar:{
+  act:"Act III: The descent",
+  title:"J. George Harrar papers.",
+  cat:{title:"J. George Harrar papers", dl:[
+    ["Dates","1906-1982 (bulk 1958-1982)"],
+    ["Size","21.57 cubic feet"],
+    ["Online","<span class='off'>No digitized content</span>"]],
+   tree:["Collection: J. George Harrar papers",
+         "  ├── Correspondence, Series 1",
+         "  ├── Speeches, Manuscripts and Publications, Series 2",
+         "  ├── Miscellany, Series 3",
+         "  └── J. George Harrar photographs, Series 1019"]},
+  body:`<p>Twenty-one and a half cubic feet is a wall of boxes, not a building. Harrar ran the
+    Foundation's agricultural program in Mexico and later became its president.</p>
+    <p>The collection comes in four <strong>series</strong>, which are <em class="def">groups of
+    records that were filed or used together</em>. An archivist settled on that structure, working
+    from how Harrar himself kept his files, which means <strong>the shape of this collection is
+    itself evidence</strong>.</p>
+    <p>From here you can click all the way down to individual folders. What you get at the bottom
+    is a title and a date, though, and never the page itself.</p>`,
+  choices:[
+    {label:"Series 1: Correspondence.", mini:"Where decisions leave traces.", to:"a3_series1"},
+    {label:"Series 2: Speeches and Publications.", to:"a3_series2"},
+    {label:"Series 3: Miscellany.", mini:"What does an archivist mean by miscellany?", to:"a3_series3"},
+    {label:"Series 1019: Photographs.", mini:"Probably just portraits.", to:"a3_photos"}
+  ]
+},
+
+a3_series2:{
+  act:"Act III", title:"Everything he said in public.",
+  body:`<p>These are finished, polished, outward-facing statements. They are useful, because this
+    is how the Foundation explained itself, but they are also, by definition, the version it wanted
+    you to have.</p>
+    <p>They won't tell you who was in the room.</p>`,
+  gain:['public_only'],
+  choices:[{label:"Back up.", to:"a3_harrar"},
+           {label:"Public statements are enough for me.", to:"a4_surrogates"}]
+},
+
+a3_series3:{
+  act:"Act III", title:"Miscellany is where the interesting things hide.",
+  body:`<p>"Miscellany" is what an archivist writes when material doesn't fit the scheme they've
+    built. You can think of it as the collection's junk drawer, and junk drawers are where the
+    unclassifiable things live.</p>
+    <p>The folder list is short: biographical information, honors and awards, clippings, calendars.
+    And then there's one folder whose title plainly belongs to a different collection entirely.</p>`,
+  choices:[
+    {label:"Look closer at the title that doesn't belong.", to:"a3_misfiled"},
+    {label:"Back up. Stay on task.", to:"a3_harrar"}
+  ]
+},
+
+a3_misfiled:{
+  act:"Act III", title:"One line in the folder list doesn't belong.",
+  find:"misfiled",
+  body:`<p>The title names an entirely different program and a different office, and the date on it
+    is 1971. You can't open the folder from here, so a title and a date are all you get.</p>
+    <p>The likeliest story is the boring one. Somebody's hand slipped once, the folder went into
+    the wrong drawer, and the archive has been faithfully preserving the error for fifty-odd
+    years.</p>
+    <p>There are two lessons here, and the second is the useful one. The first is that archives
+    contain mistakes. The second is that <strong>a folder in the wrong place is only ever found by
+    people who weren't looking for it</strong>, because nobody who wants that other program's
+    records is going to look in here.</p>`,
+  choices:[{label:"Back up.", to:"a3_harrar"}]
+},
+
+a3_photos:{
+  act:"Act III", title:"Not portraits. Meetings.",
+  find:"photos",
+  body:`<p>You can't see a single photograph from here. What you can see is the folder list, where
+    each folder gets a place, a date, and a string of subject words: <em>meetings, conferences,
+    ceremonies, dinners</em>. A few of the descriptions name the people in the pictures.</p>
+    <p>You have spent an hour hunting a document that lists who decided. Here is a shelf of
+    photographs of them in the room!</p>
+    <p><strong>You didn't think of a photograph as evidence about decision-making</strong>, because
+    you were looking for text. But who is at the table, who is standing behind them, and who isn't
+    in the frame at all? All of that is data, and it is sitting in the series you nearly
+    skipped.</p>`,
+  choices:[{label:"Back up, thoughtfully.", to:"a3_harrar"}]
+},
+
+a3_series1:{
+  act:"Act III", title:"Series 1 divides again. Of course it does.",
+  cat:{title:"Correspondence, Series 1", tree:[
+    "Series 1: Correspondence",
+    "  ├── Correspondence - Outgoing, Subseries 1_1",
+    "  ├── <span class='sel'>Correspondence - Confidential, Subseries 1_2</span>",
+    "  ├── Correspondence - General, Subseries 1_3",
+    "  ├── Correspondence - Collateral Interests, Subseries 1_4",
+    "  └── Correspondence - Relating to Written Materials, Subseries 1_5"]},
+  body:`<p>There are five subseries, and one of them is called <strong>Confidential</strong>,
+    exactly as the note in your drawer said it would be.</p>
+    <p>Your predecessor was right about something. This is the most alarming development so
+    far.</p>`,
+  choices:[
+    {label:"Open it. This is the Ledger.", to:"a3_conf"},
+    {label:"Skip it. Confidential means sealed.", mini:"No sense wasting days on a locked door.", to:"a3_skip"},
+    {label:"Read the access note first.", mini:"Find out what the rules actually are.", to:"a3_access"},
+    {label:"Try Subseries 1_4, Collateral Interests.", mini:"What on earth is that?", to:"a3_collateral"},
+    {label:"Back up to the list of series.", to:"a3_harrar"}
+  ]
+},
+
+a3_collateral:{
+  act:"Act III", title:"\"Collateral Interests\" turns out to mean everything he did on the side.",
+  find:"ghost",
+  body:`<p>The folder list reads like a tour of everything Harrar did outside the office:
+    committees, a horticultural society, a university board of trustees. Nearly every folder is
+    named for an organization.</p>
+    <p>One of them isn't. Its title reads <em>J. G. Harrar (nephew)</em>. That's the same last name
+    and the same initials, but it's a different man, and he has nothing to do with any of this.</p>
+    <p>That is a genuinely useful scare. <strong>A search for "Harrar" turns up both men</strong>,
+    and you were one careless click away from citing the wrong one and never knowing it. Names are
+    not identifiers, and in an archive, checking that your person is your person isn't pedantry.
+    It's the job.</p>`,
+  choices:[{label:"Back to the subseries.", to:"a3_series1"}]
+},
+
+a3_skip:{
+  act:"Act III", title:"You move on to General correspondence.",
+  body:`<p>Its description promises letters of congratulation, thank-you notes, and meeting
+    arrangements. It is all perfectly real, and none of it is what you came for.</p>
+    <p>Something nags at you, though. You never actually checked whether the Confidential subseries
+    was restricted. You just assumed that it was.</p>`,
+  gain:['assumed'],
+  choices:[
+    {label:"Go back and check the access note.", to:"a3_access"},
+    {label:"Carry on without it.", mini:"There is still the published record.", to:"a4_surrogates"}
+  ]
+},
+
+a3_access:{
+  act:"Act III", title:"The access note.",
+  cat:{title:"J. George Harrar papers: Conditions Governing Access", dl:[
+    ["Access","<strong>Open for research.</strong> Brittle or damaged items are available at the discretion of the Center. Audiovisual material must be consulted via an access surrogate."],
+    ["Use","The Rockefeller Archive Center has title, copyright, and literary rights in the collection, in so far as it holds them."]]},
+  body:`<p><strong>Open for research.</strong> That covers the whole collection, including the
+    subseries marked Confidential.</p>
+    <p>Okay, so the word isn't a lock, and it isn't about you at all. <strong>It's the label that
+    was already on these files when they came to the archive</strong>, a trace of how Harrar's
+    office sorted its own mail in the 1960s.</p>
+    <p>And that makes it evidence! Somebody decided, in 1964, that these letters needed a different
+    drawer. We are studying how decisions got made, and you have just found the drawer they kept
+    the decisions in. It was never sealed. It was just filed, and nobody had come to ask.</p>`,
+  gain:['confidential_read'],
+  choices:[{label:"Open it.", to:"a3_conf"}]
+},
+
+a3_conf:{
+  act:"Act III", title:"Twenty-three folders, described by date and nothing else.",
+  cat:{title:"Correspondence - Confidential, Subseries 1_2", dl:[["Description","Correspondence originally kept in files designated \"Confidential\" or \"Personal.\" The letters concern a number of topics."],
+    ["Online","<span class='off'>No digitized content</span>"]],
+   tree:["1954-1960","1961","1962","1963",
+     "<span class='sel'>1964 January-June</span>","1964 July-December",
+     "1965","1966","1967","1968 January-June","…and 13 more"]},
+  body:`<p>Let's have a good look at what the catalog tells us, and at what it doesn't.</p>
+    <p>A folder exists, it covers six months of 1964, and it holds confidential correspondence
+    belonging to the man who ran the program. <strong>The catalog says nothing whatsoever about
+    what any of it actually says.</strong> (Well, almost nothing. It does promise that the letters
+    "concern a number of topics.")</p>
+    <p>Congratulations! You have found the Ledger of the Golden Sheaf. It is a cardboard folder in
+    New York, it is open to any researcher who asks, and you can't read one word of it from
+    here.</p>`,
+  gain:['found_folder'],
+  sources:['Rockefeller Archive Center: Harrar papers, Series 1, Subseries 1_2'],
+  choices:[{label:"Then I'll go and get it.", to:"a3_excursion"}]
+},
+
+a3_excursion:{
+  act:"Interlude: go and look",
+  title:"Stop playing for two minutes.",
+  body:`<p>Everything so far has been a reconstruction. This part isn't.</p>
+    <p>Open <code>dimes.rockarch.org</code> in another tab. You want to find the <strong>J. George
+    Harrar papers</strong> and look up the size of the collection. Then type the number of cubic
+    feet below.</p>`,
+  prompt:{answer:["21.57","21.6","21"], placeholder:"e.g. 12.34"},
+  choices:[{label:"Can't reach the site? Carry on.", to:"a4_options", mini:"No penalty."}]
+},
+
+/* ---------- ACT IV -- THE VAULT ---------- */
+a4_options:{
+  act:"Act IV: The vault",
+  title:"Four ways to reach a folder 120 miles away.",
+  body:`<p>Some of these are more expensive than they look, and the one that looks cheapest is the
+    worst of the lot.</p>`,
+  choices:[
+    {label:"Request a scan. Scanned copies are free.", to:"a4_scan"},
+    {label:"Go to Sleepy Hollow yourself.", mini:"Two hours each way.", to:"a4_visit", cost:{weeks:1,dollars:120}},
+    {label:"Look for published versions instead.", to:"a4_surrogates"},
+    {label:"Find out who else has records about this.", to:"a5_scatter"}
+  ]
+},
+
+a4_scan:{
+  act:"Act IV", title:"You read the digitization policy properly.",
+  cat:{title:"Digitization requests", dl:[
+    ["Cost","Reference scans: free. Publication-quality: $25 per image."],
+    ["Limit","10 requests per researcher per calendar year."],
+    ["Turnaround","The Center <strong>\"endeavors to fulfill all digitization requests within 120 business days.\"</strong>"]]},
+  body:`<p>A hundred and twenty <em>business</em> days. That's about twenty-four weeks, and your
+    whole project is seven.</p>
+    <p>Even if you'd sent the request on day one, the file would land sometime in
+    <strong>April</strong>. Your report is due on December 4, so the scan would get here about four
+    months late.</p>
+    <p>So the scan is free, and it is entirely useless to you this semester. <strong>Cost is not
+    only money.</strong></p>`,
+  gain:['scan_math'],
+  choices:[
+    {label:"Submit it anyway and hope.", to:"e_broke", cost:{weeks:5}},
+    {label:"Note it for a future project. Find another way.", to:"a4_options"}
+  ]
+},
+
+a4_visit:{
+  act:"Act IV-b: The reading room",
+  title:"You book an appointment. Yes, that Sleepy Hollow.",
+  cat:{title:"Before you travel", dl:[
+    ["Appointment","Required, booked at least three days ahead."],
+    ["Hours","Monday to Friday, 9:30 to 5:00."],
+    ["Rules","Pencils and laptops only. No pens. Bags in lockers. One folder at a time, marked with an OUT card. Photography generally permitted."]]},
+  body:`<p>It takes three days' notice, a two-hour drive, and an email to a professor explaining
+    your absence, which you rewrite four times.</p>
+    <p>The archive isn't haunted, by the way. The archivists have been asked, repeatedly, by people
+    who thought they were the first to think of it.</p>
+    <p>You skim the rules, the way pretty much everybody does. So what goes in the bag?</p>`,
+  choices:[
+    {label:"Laptop, charger, pens, notebook, snacks, the works.", to:"a4_arrive_full"},
+    {label:"Read the rules properly first, then pack.", mini:"Boring, but effective.", to:"a4_arrive_read"}
+  ]
+},
+
+a4_arrive_full:{
+  act:"Act IV-b", title:"The supervisor looks at your pen.",
+  pic:"readingroom",
+  body:`<p>She looks at it the way a customs officer looks at an undeclared orange.</p>
+    <p><strong>Pencils only.</strong> There's a jar of them on the desk, worn down to stubs by
+    generations of researchers who didn't read the rules, either. Your bag goes in a locker, and so
+    do the snacks. Your phone stays with you, because photography is allowed, and that turns out to
+    matter a lot.</p>
+    <p>Eleven minutes in, and you're already down one pen and one lunch.</p>
+    <p><em>None of this is fussiness, though. Pens bleed, crumbs attract things that eat paper, and
+    bags conceal, which is a polite way of saying that archives have been stolen from for as long
+    as there have been archives.</em></p>`,
+  gain:['pen_shame'],
+  choices:[{label:"Sit down.", to:"a4_inherit"}]
+},
+
+a4_arrive_read:{
+  act:"Act IV-b", title:"You arrive with a pencil and no opinions.",
+  pic:"readingroom",
+  body:`<p>Your bag goes in the locker, your laptop comes out, and your phone stays in your hand.
+    The supervisor's entire interaction with you is a nod.</p>
+    <p>It is an unreasonably handsome building for a place that mostly holds cardboard.</p>`,
+  gain:['prepared'],
+  choices:[{label:"Sit down.", to:"a4_inherit"}]
+},
+
+a4_inherit:{
+  act:"Act IV-b", speaker:{cls:"arc",name:"Reading room supervisor",initials:"RS"},
+  title:"She is a degree cooler than she needs to be.",
+  says:`<p>"You're the second student from your college this year."</p>
+    <p>"The last one photographed a folder we'd specifically asked them not to photograph, and then
+    put it back out of order. I spent a morning fixing it."</p>`,
+  body:`<p>You have never met this person, and you're already a few points down for something
+    somebody else did in March.</p>
+    <p><strong>You inherit the reputation of everyone who came before you.</strong> The political
+    scientist Francesca Jensenius was refused access at one archive because an earlier scholar had
+    photographed against the rules, and at another because a foreign researcher had leaned on a
+    political contact to hurry things along. The librarian, still angry, lectured her about
+    disrespectful foreigners and then declined to help. It took hours of conversation, and a great
+    deal of tea, to undo damage she hadn't caused.</p>`,
+  gain:['inherited_trust'],
+  choices:[
+    {label:"Apologize for something you didn't do. Take your time.", to:"a4_request"},
+    {label:"Point out that it wasn't you.", mini:"Which is true.", to:"a4_defensive"}
+  ]
+},
+
+a4_defensive:{
+  act:"Act IV-b", title:"It was, in fairness, not you.",
+  body:`<p>She agrees that it wasn't you, and she is then perfectly, immovably correct with you for
+    the rest of the day.</p>
+    <p>Nothing gets refused, but nothing gets offered, either. You don't get the "you might also
+    want to look at," or the "there's a better folder for that," or any of the twenty years of
+    knowledge about this collection that lives in her head and in no finding aid anywhere.</p>
+    <p><strong>The catalog is not the archive. The archivist is.</strong></p>`,
+  gain:['lost_archivist'],
+  choices:[{label:"Request the folder.", to:"a4_request"}]
+},
+
+a4_request:{
+  act:"Act IV-b", speaker:{cls:"arc",name:"Reading room supervisor",initials:"RS"},
+  title:"A small administrative catastrophe.",
+  says:`<p>"Subseries 1_2? Let me check. Ah. Some of this collection is stored off-site."</p>
+    <p>"Off-site retrieval can take up to ten business days. If you'd requested it when you booked,
+    it would be sitting here now."</p>`,
+  body:`<p>Uh-oh. You didn't, because nobody told you that boxes can live somewhere other than the
+    building with the boxes in it.</p>
+    <p><strong>This is the most common wasted trip in archival research</strong>, and it's in the
+    Schmidt guide you read for today. You always want to request your boxes <em>before</em> you
+    travel.</p>
+    <p>Today you're lucky, because your folder happens to be on site. Somewhere in this building is
+    a version of you who isn't so lucky, sitting in a very handsome room with nothing to read.</p>`,
+  gain:['offsite_lesson'],
+  choices:[{label:"Take the folder.", to:"a4_read"}]
+},
+
+a4_read:{
+  act:"Act IV-b", title:"One folder. One at a time.",
+  pic:"stacks2",
+  body:`<p>You get a single folder and an OUT card, which marks the folder's place in its box like
+    a bookmark made of bureaucracy. You may not have two folders out at once, and you can't reorder
+    anything, because the order the papers are in <em>is data</em>.</p>
+    <p>And now for the thing nobody warns you about: <strong>most of it is boring.</strong> There
+    is scheduling, there is a dispute about who pays for a flight to Guadalajara, and there are
+    three drafts of a letter saying almost nothing, plus a fourth saying almost nothing more
+    politely.</p>
+    <p><em>Confidential</em> in 1964 mostly meant <em>not for circulation</em>. It did not mean
+    explosive. It meant not for the newsletter.</p>
+    <p>Then, on page 26, there's a memo listing four countries, with a one-line judgment beside
+    each about the government's "seriousness." In the margin, in pencil, in a hand that isn't
+    Harrar's, somebody has written <em>discuss w/ JGH before Wed.</em> It takes you a moment to
+    work out that JGH is the man whose papers you're holding.</p>
+    <p>That is a decision being made, and all the finding aid said was "1964 January-June."</p>`,
+  gain:['visited','saw_boring'],
+  sources:['Rockefeller Archive Center: Harrar papers, Subseries 1_2, folder "1964 January-June" (consulted in person)'],
+  choices:[
+    {label:"Photograph everything, fast.", mini:"Closing is at 5:00, and it's a two-hour drive.", to:"a4_photo_fast"},
+    {label:"Photograph the folder label first, then pages in order.", mini:"Slower. Fewer pages.", to:"a4_photo_slow"},
+    {label:"Read the four pages about the broken projector properly.", mini:"Why would anyone file this?", to:"a4_projector"}
+  ]
+},
+
+a4_projector:{
+  act:"Act IV-b", title:"Four pages about a film projector.",
+  find:"projector",
+  body:`<p>It broke in Guadalajara, and somebody was extremely annoyed about it. The correspondence
+    runs to four pages, and it is, on its face, the least important thing in the folder.</p>
+    <p>Except, why was there a projector at all? Because the Foundation was <em>showing films</em>
+    to farmers, in villages, as part of the program. There was a film unit, there were scripts, and
+    somebody chose what those films said.</p>
+    <p><strong>You came for a document about who decided. You have found an entire arm of the
+    program you didn't know existed</strong>, and it is about persuasion rather than wheat. Nobody
+    is writing about this, and all it took to find it was four pages of complaint about a broken
+    lamp.</p>`,
+  choices:[
+    {label:"Photograph everything, fast.", to:"a4_photo_fast"},
+    {label:"Photograph the label first, then pages in order.", to:"a4_photo_slow"}
+  ]
+},
+
+a4_photo_fast:{
+  act:"Act IV-b", title:"Two hundred and forty photographs.",
+  body:`<p>You are magnificent. You clear this folder and the next three by 4:40, and you're on the
+    road by 4:55 with a phone full of history.</p>
+    <p>On Sunday you sit down to write, and that's when you find the problem. <strong>You have 240
+    photographs of paper and no idea which folder any of them came from.</strong> There isn't one
+    folder label in the whole set. There are several duplicates, eleven pictures of your own thumb,
+    and one crisp, beautifully focused photograph of the table.</p>
+    <p>You can read the memo, and you're pretty sure which folder it came from. But "pretty sure"
+    isn't a citation, and a source you can't cite is just a rumor you happen to have seen.</p>
+    <p>(Don't feel too bad. Nearly everybody does this exactly once.)</p>`,
+  gain:['photo_disaster'],
+  choices:[{label:"Drive home.", to:"a4_home"}]
+},
+
+a4_photo_slow:{
+  act:"Act IV-b", title:"Sixty photographs, every one of them citable.",
+  body:`<p>Label first, then the pages in order, then the label again at the end so you know where
+    the folder stopped. You get through less than half of it before the supervisor starts tidying a
+    desk that's already tidy.</p>
+    <p>It is less material than you wanted, but every piece of it can be footnoted to a specific
+    folder in a specific subseries in a specific collection.</p>
+    <p><strong>Half a folder you can cite beats a whole folder you can't.</strong></p>`,
+  gain:['photo_good'],
+  choices:[{label:"Drive home.", to:"a4_home"}]
+},
+
+a4_home:{
+  act:"Act IV-b", title:"Four hours of driving for one day of reading.",
+  body:`<p>You leave at dusk. The road out of the valley runs past a churchyard, and somewhere
+    around the second mile you catch yourself checking the mirror. If anything in America were
+    going to chase a person carrying secrets out of Sleepy Hollow at nightfall, this would be the
+    road for it.</p>
+    <p>Nothing does. You're carrying a phone full of photographs of sixty-year-old office mail.
+    Even the Horseman has standards.</p>
+    <p>You spent a whole day on a few inches of paper. This one subseries has twenty-three folders,
+    and you haven't opened a single box of the Foundation's own 7,522 cubic feet.</p>
+    <p>You now understand in your legs what the catalog couldn't tell you. Archival research is not
+    slow because archivists are slow. It is slow because paper is physical, it lives in one place,
+    and only one person at a time can look at any given sheet of it.</p>`,
+  choices:[
+    {label:"Find out who else was in the room.", to:"a5_scatter"},
+    {label:"Follow one of the threads you didn't come for.", to:"l_hub"},
+    {label:"Enough. Decide what this project is.", to:"a6_decide"}
+  ]
+},
+
+a4_surrogates:{
+  act:"Act IV", title:"The published record.",
+  pic:"microfilm",
+  body:`<p>There are annual reports, printed and public, along with program reports and
+    congressional testimony. Some of it really is online, because it was published rather than
+    filed. Some of it is on microfilm, a format that requires a machine, which requires a library,
+    which requires opening hours.</p>
+    <p>This is a real route, and a chronically underrated one. You can build an honest account of
+    <strong>what the Foundation said it was doing and why</strong> without leaving your desk.</p>
+    <p>What you can't do is check that against what they said to each other. Everything here was
+    written to be read by outsiders. That isn't a flaw, as long as you say so.</p>`,
+  gain:['surrogate_route'],
+  sources:['Rockefeller Foundation annual reports (published)'],
+  choices:[
+    {label:"Use this and be honest about it.", to:"a6_decide"},
+    {label:"Ask who else kept records of all this.", to:"a5_scatter"}
+  ]
+},
+
+/* ---------- ACT V -- THE OTHER RUINS ---------- */
+a5_scatter:{
+  act:"Act V: The other ruins",
+  title:"The Foundation wasn't the only one in the room.",
+  pic:"borlaug",
+  body:`<p>Of course, a decision about wheat in Mexico in the 1960s involved more than one office.
+    There was a foundation in New York, a Mexican ministry, a research station, and a set of
+    international institutions, and their records didn't all go to Sleepy Hollow.</p>`,
+  choices:[
+    {label:"The International Maize and Wheat Improvement Center, in Mexico.",
+     mini:"Known by its Spanish initials, CIMMYT.", to:"a5_cimmyt", cost:{weeks:2}, hideIf:'cimmyt'},
+    {label:"The Food and Agriculture Organization of the United Nations, in Rome.",
+     mini:"You'll meet this building again.", to:"a5_fao", cost:{weeks:1}, hideIf:'fao'},
+    {label:"Mexico's national archive, the Archivo General de la Nación.",
+     mini:"In Mexico City.", to:"a5_agn", cost:{weeks:1}, hideIf:'agn_done'},
+    {label:"The farmers whose fields this happened in.", to:"a5_farmers", hideIf:'saw_silence'},
+    {label:"Follow one of the threads you didn't come for.", to:"l_hub"},
+    {label:"Stop searching. Decide what this project is.", to:"a6_decide"}
+  ]
+},
+
+a5_cimmyt:{
+  act:"Act V", speaker:{cls:"cim",name:"Archivist, Mexico",initials:"CM"},
+  title:"Two weeks for a reply, and it's a good one.",
+  says:`<p>"Buenos días. Sí, tenemos documentación del programa desde 1943."</p>
+    <p>"Much of our early material is in Spanish and is not cataloged online. I can search for you,
+    but I will need a specific date range and topic, and it may take some weeks."</p>`,
+  body:`<p>So this archive is reachable, but it is not fast. The two weeks bought you confirmation
+    that a whole other body of evidence exists, in another language, held by the institution that
+    actually did the work.</p>
+    <p>It also took two weeks to learn something the Foundation's catalog could have told you in
+    ten seconds. <strong>Not all archives are equally easy, and the easy ones are easy because
+    somebody was rich enough to make them so.</strong></p>`,
+  gain:['left_rac','cimmyt'],
+  sources:['International Maize and Wheat Improvement Center (Mexico): early program records, uncataloged'],
+  choices:[{label:"Keep going.", to:"a5_scatter"}]
+},
+
+a5_fao:{
+  act:"Act V", title:"Rome.",
+  body:`<p>It takes a week of emails to learn this much. The Food and Agriculture Organization of
+    the United Nations kept records of the meetings where national delegations argued about
+    agricultural policy. The records exist, they're in Rome, and getting at them is a negotiation
+    with an institution rather than a search in a catalog.</p>
+    <p>(You'll meet this building again in class in a week and a half, this time from the other
+    side of the desk.)</p>`,
+  gain:['left_rac','fao'],
+  sources:['Food and Agriculture Organization of the United Nations, Rome: meeting records'],
+  choices:[{label:"Keep going.", to:"a5_scatter"}]
+},
+
+a5_farmers:{
+  act:"Act V", title:"There is no archive.",
+  body:`<p>You look for a while, because it seems impossible that there would be nothing.</p>
+    <p>There are photographs of farmers, taken by Foundation staff and captioned by them. There are
+    survey responses, summarized in program reports by the people running the program. There are
+    oral histories recorded decades later, by researchers, in answer to researchers' questions.</p>
+    <p>What you don't find, anywhere, is a collection of documents <em>created by</em> the farmers
+    of the Bajío in 1964 and kept because somebody thought it mattered.</p>
+    <p><strong>The Rockefeller Foundation's records survive in 7,522 cubic feet because a wealthy
+    institution wanted its own history preserved and could pay to preserve it.</strong> That is not
+    a conspiracy. It is just what archives are: the accumulated result of who had the resources and
+    the motive to keep things.</p>
+    <p>If we build this project from what's easy to reach, we'll write a history of the Green
+    Revolution from the point of view of the people who funded it, and nothing in our method will
+    tell us that we did.</p>`,
+  gain:['left_rac','saw_silence'],
+  choices:[{label:"Sit with that.", to:"a5_scatter"}]
+},
+
+/* --- Act V-b: the Jensenius sequence --- */
+a5_agn:{
+  act:"Act V-b: The other kind of archive",
+  title:"You write to Mexico's national archive.",
+  pic:"lecumberri",
+  body:`<p>The Archivo General de la Nación holds the Mexican government's side of the story: the
+    ministry that agreed to the program, and the officials who chose the regions. It is housed in
+    the former Lecumberri prison, and the dome in the middle is the old panopticon watchtower, from
+    which a single guard could see down every wing.</p>
+    <p>You send a polite email in careful Spanish, and you wait.</p>
+    <p>Everything from here on is going to feel different from the Rockefeller Archive Center. It
+    is worth noticing <em>why</em>.</p>`,
+  gain:['left_rac','agn_done'],
+  choices:[{label:"A week later, a reply arrives.", to:"a5_loop"}]
+},
+
+a5_loop:{
+  act:"Act V-b", speaker:{cls:"arc",name:"The archive, by email",initials:"AG"},
+  title:"A perfectly polite circle.",
+  says:`<p>"To consult the documentation you will require a researcher's credential."</p>
+    <p>"To obtain a credential, please submit an institutional letter addressed to the responsible
+    official."</p>
+    <p>"To learn who the responsible official is, please inquire at the reading room reception, for
+    which a credential is required."</p>`,
+  body:`<p>So you need the pass to meet the person who issues the passes.</p>
+    <p>This isn't a joke, and it isn't unusual. The political scientist Francesca Jensenius hit
+    exactly this at an Indian state legislature. She needed an appointment with someone inside the
+    compound to get an entry pass, and she couldn't meet the head librarian to arrange one without
+    a pass. She got in because a colleague she was traveling with knew somebody.</p>`,
+  gain:['catch22'],
+  choices:[
+    {label:"Send a formal letter from the college and wait.", mini:"By the book.", to:"a5_letter", cost:{weeks:2}},
+    {label:"Find someone who's already there.", mini:"A graduate student, a local scholar.", to:"a5_local", cost:{weeks:1}},
+    {label:"Give up on this one.", to:"a5_scatter"}
+  ]
+},
+
+a5_letter:{
+  act:"Act V-b", title:"Two weeks to turn a letter into a credential.",
+  body:`<p>It works, more or less, and you are now a credentialed researcher at an archive two
+    thousand miles away that you can't visit, with the semester shrinking behind you.</p>
+    <p>Going by the book is not wrong. It is just the slowest of the routes that work, and you paid
+    for it in the only currency you had.</p>`,
+  gain:['by_the_book'],
+  choices:[{label:"Ask what they hold.", to:"a5_notexist"}]
+},
+
+a5_local:{
+  act:"Act V-b", speaker:{cls:"cim",name:"Graduate student, Mexico City",initials:"GS"},
+  title:"She gets further in one afternoon than you did in two weeks.",
+  find:"gossip",
+  says:`<p>"I went by on Thursday. The person you needed was on the second floor the whole
+    time."</p>
+    <p>"Also, and you'd never have gotten this from an email, everyone there says the 1960s
+    ministry files were moved twice, and nobody's sure what survived the second move."</p>`,
+  body:`<p>Two things just happened, and the second one matters more. She got through a door that
+    you couldn't. And she heard the <em>gossip</em>, the informal knowledge of what's actually in
+    the building, which no catalog records and no official puts in writing.</p>
+    <p><strong>Different people open different doors.</strong> Jensenius found the same thing from
+    the other direction. As a foreigner she could reach senior officials, but it was her local
+    colleague who learned what the office was really saying. Neither of them could have done the
+    project alone.</p>`,
+  gain:['positionality'],
+  choices:[{label:"Ask what they hold.", to:"a5_notexist"}]
+},
+
+a5_notexist:{
+  act:"Act V-b", title:"The records don't exist. Probably.",
+  body:`<p>The answers arrive over ten days, and they disagree with each other. The files were
+    never transferred, or they were transferred but never cataloged. There was a flood in a
+    basement storeroom, and there was a fire, though not the same fire.</p>
+    <p>Jensenius was told all of this, too: compact discs lost in a monsoon flood, and census
+    booklets that had never existed, then were never archived, then had burned ten years earlier.
+    She later found those booklets sitting in an election commission archive, unrecognized,
+    <strong>because nobody working there knew they were there.</strong></p>
+    <p>Years afterward, the same office asked <em>her</em> for copies of data they had lost. The
+    researcher had become the archive.</p>`,
+  choices:[
+    {label:"Accept it. Write that no records survive.", to:"a5_accept"},
+    {label:"Ask someone to physically go and look.", to:"a5_look", cost:{weeks:1}}
+  ]
+},
+
+a5_accept:{
+  act:"Act V-b", title:"You write the sentence.",
+  body:`<p>"No ministry records from this period survive."</p>
+    <p>That is a reasonable thing to write, and four people told you so. It is also, as far as you
+    know, untrue. You have confused <em>nobody could find it for me by email</em> with <em>it
+    doesn't exist</em>.</p>
+    <p>Here's the rule Jensenius learned the hard way: <strong>always look for yourself.</strong>
+    Absence of evidence in an archive is very often just absence of a catalog.</p>`,
+  gain:['accepted_absence'],
+  choices:[{label:"Move on.", to:"a5_scatter"}]
+},
+
+a5_look:{
+  act:"Act V-b", title:"Three shelves in a back room, uncataloged.",
+  body:`<p>And there they are! They were not lost, and they were not burned. They were just never
+    described, in a room nobody had a reason to enter, in the custody of an office that doesn't
+    think of itself as an archive.</p>
+    <p>You can't read them, of course. They're in Spanish, they're two thousand miles away, and you
+    have a report due. But you know the evidence exists, which means you know precisely what your
+    project is missing, and you can say so.</p>`,
+  gain:['found_absence','knows_gap'],
+  sources:['Ministry files, Mexico City: located, uncataloged, unconsulted'],
+  choices:[{label:"Ask if anyone will summarize them.", to:"a5_compiled"}]
+},
+
+a5_compiled:{
+  act:"Act V-b", title:"Somebody does you a kindness.",
+  body:`<p>A helpful staff member offers to save you the trouble. Years ago, a colleague put
+    together a summary table that covers the same ground. Would you like it?</p>
+    <p>It arrives the next day, and it's clean, complete, and exactly the shape you needed.</p>`,
+  choices:[
+    {label:"Use it. It's precisely what I wanted.", to:"a5_trust"},
+    {label:"Spot-check it against the originals.", mini:"Ask for scans of three pages.", to:"a5_check", cost:{weeks:1}}
+  ]
+},
+
+a5_trust:{
+  act:"Act V-b", title:"You build a section of the paper on it.",
+  body:`<p>It is tidy and it is quotable, and you have no idea who made it, from what, or why.</p>
+    <p>Jensenius was handed exactly this kind of gift in a Himachal Pradesh archive, where a
+    librarian proudly produced a complete, pre-compiled list of everything she wanted. She checked
+    it against the originals anyway, and <strong>many of the figures were simply wrong.</strong>
+    She spent days rebuilding it.</p>
+    <p><strong>The convenient dataset is the dangerous one</strong>, because convenience keeps us
+    from asking where it came from.</p>`,
+  gain:['took_compiled'],
+  choices:[{label:"Okay, check it after all.", to:"a5_check", cost:{weeks:1}},
+           {label:"Press on.", to:"a5_scatter"}]
+},
+
+a5_check:{
+  act:"Act V-b", title:"Three pages, and two disagree with the table.",
+  body:`<p>Nobody did this maliciously. The table was compiled quickly, probably from one set of
+    publications rather than all of them, probably years ago, and for a purpose that wasn't
+    yours.</p>
+    <p>You have lost a week and gained the only thing that matters: you know the summary is
+    unreliable, which you'd otherwise have found out when somebody reviewed your paper.</p>`,
+  gain:['checked_compiled'],
+  choices:[{label:"Keep going.", to:"a5_hundred"}]
+},
+
+a5_hundred:{
+  act:"Act V-b", title:"And then they send you the real thing.",
+  body:`<p>A senior official, genuinely trying to help, has the program's regional allocation
+    records entered into a spreadsheet. It takes days, and he's proud of it. You open it.</p>
+    <p>There are region names, there are funds allocated, and there is a column headed
+    <em>percentage disbursed</em>.</p>
+    <p>Every row reads <strong>100%</strong>.</p>
+    <p>That is all anyone recorded, with nothing on what the money was spent on, or when, or who
+    got it. The data are authentic, expensive, and kindly given, and they answer nothing.</p>
+    <p>Jensenius got precisely this spreadsheet for Indian politicians' development funds, after
+    days of going back to an office to watch the data entry.</p>
+    <p><strong>Getting the data and answering the question are two different
+    achievements.</strong></p>`,
+  gain:['hundred_percent'],
+  choices:[{label:"Go back.", to:"a5_scatter"}]
+},
+
+/* ---------- MONEY -- available at any moment ---------- */
+fund_hub:{
+  act:"Asking for money",
+  title:"You're an undergraduate with a problem and not much money.",
+  body:`<p>There are two places on campus that give students money for research. They behave
+    completely differently, and the difference is worth more to you than the money is.</p>
+    <p><em>It's currently {DATE}, and you have {MONEY}.</em></p>`,
+  choices:[
+    {label:"Apply to the College's research fund.", mini:"The big one.", to:"fund_college"},
+    {label:"Ask the International Affairs Program.", mini:"The small one, down the hall.", to:"fund_ia"},
+    {label:"Never mind. Get back to work.", resume:true}
+  ]
+},
+
+fund_college:{
+  act:"Asking for money", title:"The College fund is real, it's substantial, and it's six months away.",
+  body:`<p>You find the page, which has a form, a committee, and a deadline, and the deadline for
+    anything you could spend this semester went by <strong>roughly six months ago</strong>.</p>
+    <p>Applications get reviewed on a cycle, so you apply in the spring for the following fall, or
+    in the fall for the spring. The money is genuinely generous, and it's genuinely unavailable to
+    somebody who figured out last Tuesday what their project needs.</p>
+    <p><strong>An institution's calendar is not your calendar.</strong> If an archive has already
+    taught you that today, well, here it is again, and this won't be the last time. The fix isn't
+    to be cleverer. The fix is to know in September what you'll need in March.</p>`,
+  gain:['asked_college'],
+  choices:[
+    {label:"Apply anyway, for next semester.", mini:"Costs a week you can't spare.", to:"fund_college_apply", cost:{weeks:1}},
+    {label:"Back to work.", resume:true}
+  ]
+},
+
+fund_college_apply:{
+  act:"Asking for money", title:"A week spent on a project you haven't had yet.",
+  body:`<p>You write it, and it's a good application, because you're in the middle of finding out
+    exactly what an archival project costs.</p>
+    <p>That's the quiet joke of research funding: <strong>the application you can write well is the
+    one you no longer urgently need.</strong> Most people who seem to have astonishing access
+    really just have an old application and good timing.</p>`,
+  gain:['applied_college'],
+  choices:[{label:"Back to work.", resume:true}]
+},
+
+/* Never rendered: go() reroutes this to yes / no / already-funded at call time.
+   It exists so the map has something to draw the three outcomes from. */
+fund_ia:{ act:"Asking for money", title:"(router: which answer the Program gives you)" },
+
+fund_ia_yes:{
+  act:"Asking for money", speaker:{cls:"lib",name:"Program coordinator",initials:"PC"},
+  title:"\"How much do you need?\"",
+  says:`<p>"We keep a little set aside for exactly this. I can do <strong>$100</strong>. I'll just
+    need a sentence about what it's for and a receipt afterward."</p>
+    <p>"Do it now, though. We allocate until it's gone, and it goes."</p>`,
+  body:`<p>That took one email, one sentence, and about as long as it takes to read the College's
+    eligibility page. Nice!</p>
+    <p><strong>Small local money is fast, and it's the money undergraduates systematically fail to
+    ask for.</strong> It is not hidden. It's just that asking feels presumptuous when you don't yet
+    think of yourself as someone who does research.</p>
+    <p>It is worth noticing what the money <em>doesn't</em> do, though. Your budget for the whole
+    project is now $250. A day in the reading room runs $120, and there's at least one other thing
+    out there with a $140 price tag. That adds up to $260. A grant rarely closes the gap. It just
+    moves where the gap is.</p>`,
+  gain:['got_ia_money'],
+  grant:{dollars:100},
+  choices:[{label:"Back to work, $100 richer.", resume:true}]
+},
+
+fund_ia_no:{
+  act:"Asking for money", speaker:{cls:"lib",name:"Program coordinator",initials:"PC"},
+  title:"\"Ah. You've just missed it.\"",
+  says:`<p>"We allocated the last of it in early November. There were four requests in the first
+    week of the semester, and they took most of it."</p>
+    <p>"Ask me in January and the answer's different."</p>`,
+  body:`<p>It's {DATE}. The money existed, it was small, it was easy to get, and it was gone before
+    you thought to ask. It did not go to anyone cleverer than you. It went to four people who asked
+    in the first week.</p>
+    <p><strong>Budgets have a calendar, too, and theirs runs from the start of the year, not from
+    the moment you realize you need something.</strong> The people who get the small grants are
+    rarely the people with the best projects. They are the people who asked in week one.</p>`,
+  gain:['missed_ia_money'],
+  choices:[{label:"Back to work, poorer and wiser.", resume:true}]
+},
+
+fund_ia_done:{
+  act:"Asking for money", title:"You've already had the Program's hundred dollars.",
+  body:`<p>The coordinator is friendly, and the fund is finite. There isn't a second hundred.</p>`,
+  choices:[{label:"Back to work.", resume:true}]
+},
+
+/* ---------- ACT VII -- THE THREADS YOU DID NOT COME FOR ---------- */
+l_hub:{
+  act:"The threads you didn't come for",
+  title:"The things you trip over can go somewhere.",
+  body:`<p>Every one of these starts as a detour, and none of them is the Ledger. A couple of them
+    would take your project somewhere else entirely, which is a thing you're allowed to let
+    happen.</p>
+    <p><em>Threads you haven't opened are grayed out, along with the find that would open
+    them.</em></p>`,
+  leadMenu:true
+},
+
+/* --- Thread: the film program --- */
+l_film_start:{
+  act:"Thread: The film program", title:"You go looking for films that nobody has mentioned.",
+  body:`<p>The correspondence proves they existed: prints, a projector, a circuit of villages. The
+    catalog says nothing about any of it, because the catalog describes <em>paper</em>.</p>`,
+  choices:[
+    {label:"Ask the reference archivist directly.", to:"l_film_ask"},
+    {label:"Search national film archives.", mini:"Surely somebody preserved them.", to:"l_film_natl"},
+    {label:"Search online marketplaces.", mini:"A strange instinct. Follow it.", to:"l_ebay_start"}
+  ]
+},
+l_film_ask:{
+  act:"Thread: The film program", title:"\"Oh, the reels. Yes. They're in an unprocessed accession.\"",
+  find:"reels",
+  body:`<p>An <strong>accession</strong> is <em class="def">a batch of material that an archive has
+    taken in</em>, and "unprocessed" means nobody has sorted or described it yet. In this case it's
+    nine cans of 16&nbsp;mm film that came in decades ago and have never been cataloged.</p>
+    <p>You can't view the originals, for preservation reasons. Audiovisual material has to be
+    consulted through an <strong>access surrogate</strong>, which is <em class="def">a copy made so
+    that the original doesn't have to be handled</em>. No surrogate has ever been made, because
+    nobody has ever asked.</p>
+    <p><strong>You are the first person to ask.</strong> That sentence is available far more often
+    than undergraduates believe. Not everything unread is secret. Most of it is simply
+    unrequested.</p>
+    <p>Making a surrogate would take months, and money you don't have. But you now know that nine
+    films exist, which is nine more than the literature knows about.</p>`,
+  choices:[{label:"Back to the threads.", to:"l_hub"}]
+},
+l_film_natl:{
+  act:"Thread: The film program", title:"Nothing, and the nothing is instructive.",
+  body:`<p>National film archives collect features, newsreels, and documentaries that had a
+    distributor. A foundation's instructional films, shown from the back of a truck in the Bajío,
+    are none of those things.</p>
+    <p><strong>Preservation follows prestige.</strong> The categories an archive collects were set
+    by somebody's judgment about which films were worth keeping, and that judgment was made long
+    before your question existed.</p>`,
+  choices:[{label:"Try elsewhere.", to:"l_film_start"}]
+},
+
+/* --- Thread: the people in the photographs --- */
+l_fb_start:{
+  act:"Thread: The living", title:"You start with a name in a folder description.",
+  body:`<p>A few of the folder descriptions in the photograph series name the people in the
+    pictures, and one of the last names is unusual enough to search.</p>
+    <p>He died in 1998. His daughter, it turns out, runs a Facebook group.</p>`,
+  choices:[{label:"Look at the group.", to:"l_fb_group"}]
+},
+l_fb_group:{
+  act:"Thread: The living", title:"\"Former Field Staff & Families: Mexico Program.\" 340 members.",
+  body:`<p>There are photographs of houses in Mexico, and there are arguments about who was posted
+    where. One woman is sharing her father's slides, and somebody has scanned a Christmas letter
+    from 1965.</p>
+    <p>This is an archive, even though nobody calls it that, nobody has cataloged it, and it will
+    disappear the day the platform does.</p>`,
+  choices:[
+    {label:"Post publicly asking if anyone has documents.", to:"l_fb_post"},
+    {label:"Message the administrator first.", mini:"She's a gatekeeper, and gatekeepers come up a lot in this business.", to:"l_fb_admin"},
+    {label:"Read ten years of posts without saying anything.", to:"l_fb_lurk"}
+  ]
+},
+l_fb_post:{
+  act:"Thread: The living", title:"Forty replies in a day, and one of them is angry.",
+  body:`<p>Three people offer scrapbooks, and one offers a box of slides. Two ask, reasonably
+    enough, who you are. And one writes: <em>"Why is a student digging into our parents' work? What
+    is this for?"</em></p>
+    <p>She is not being unreasonable. You walked into a room full of people who knew each other and
+    announced that you were studying them.</p>`,
+  choices:[
+    {label:"Answer her publicly and honestly.", to:"l_fb_ethics"},
+    {label:"Ignore it and follow up the offers.", to:"l_fb_ethics"}
+  ]
+},
+l_fb_admin:{
+  act:"Thread: The living", speaker:{cls:"grp",name:"Group administrator",initials:"GA"},
+  title:"She wants to know what you're going to say about her father.",
+  says:`<p>"I'll let you post. I'd like to see whatever you write before it goes anywhere."</p>
+    <p>"These men are mostly dead, and the families are still proud of them. Some of what's been
+    written about the program has not been kind."</p>`,
+  body:`<p>This is a negotiation that turns up at pretty much every door in this business. Here,
+    though, the gatekeeper is guarding people rather than paper, and the condition she's asking for
+    would give her editorial say over your findings.</p>
+    <p>You can say yes, and researchers do. But it is worth noticing that you're being asked to
+    trade <em>independence</em> for access, and that is a different currency from time or
+    money.</p>`,
+  choices:[{label:"Think about that, then continue.", to:"l_fb_ethics"}]
+},
+l_fb_lurk:{
+  act:"Thread: The living", title:"You read ten years of other people's posts.",
+  body:`<p>It's fascinating, and it takes an afternoon. You now know things about these families
+    that none of them told you.</p>
+    <p>Now, stop for a second. <strong>A group being publicly visible is not the same as its
+    members consenting to be studied.</strong> We're looking at living people now, which makes this
+    human subjects research, with a review board attached, and not archival work.</p>
+    <p>The dead have no such protection, which is precisely why archives feel so much easier, and
+    precisely why the ethical questions get quietly skipped when the evidence is old.</p>`,
+  choices:[{label:"Introduce yourself properly, and ask.", to:"l_fb_ethics"}]
+},
+l_fb_ethics:{
+  act:"Thread: The living", title:"A scrapbook arrives as eleven photographs of pages.",
+  find:"family",
+  body:`<p>A field officer's wife kept it. It has program bulletins, a hand-drawn map of a
+    demonstration plot, a printed schedule of <em>film screenings</em>, and photographs of an
+    audience sitting on the ground in front of a sheet.</p>
+    <p>None of this is in Sleepy Hollow. It exists because somebody's mother thought it was worth
+    keeping, and it survives in a spare room.</p>
+    <p><strong>The archive we've been treating as "the record" is one surviving fraction of what
+    was made.</strong> There are other fractions in houses, on hard drives, and in Facebook groups.
+    They are uncataloged and unsearchable, and they're one estate cleanout away from a
+    dumpster.</p>`,
+  choices:[{label:"Back to the threads.", to:"l_hub"}]
+},
+
+/* --- Thread: the trove for sale --- */
+l_ebay_start:{
+  act:"Thread: For sale", title:"Somebody is selling 1964.",
+  cat:{title:"Online listing", dl:[
+    ["Item","ESTATE LOT: 1960s agricultural program papers, photographs, 9 film reels"],
+    ["Description","<em>“From my grandfather's garage. He worked in Mexico. Lots of paperwork, some in Spanish. Reels untested. No returns.”</em>"],
+    ["Price","<strong>$140</strong>"]]},
+  body:`<p>It starts with a name you picked up along the way, typed into an online marketplace on a
+    whim. You have <strong>{MONEY}</strong>.</p>
+    <p>This is, quite possibly, exactly what you have spent the whole project failing to reach. It
+    is also a photograph of a cardboard box, taken on a phone.</p>`,
+  choices:[
+    {label:"Buy it.", mini:"Now, before someone else does.", to:"l_ebay_buy", cost:{dollars:140}, needMoney:140},
+    {label:"Message the seller first.", mini:"Ask what's actually in the box.", to:"l_ebay_msg"},
+    {label:"Walk away.", mini:"This isn't how research works.", to:"l_hub"}
+  ]
+},
+l_ebay_msg:{
+  act:"Thread: For sale", speaker:{cls:"grp",name:"The seller",initials:"TS"},
+  title:"He isn't a dealer. He's somebody's grandson.",
+  says:`<p>"Honestly, there's about six more boxes. Mom wants the garage back."</p>
+    <p>"I put up the one that looked interesting. If you want the rest you can have them, I just
+    don't want to pay to ship it all."</p>`,
+  body:`<p>So there are six more boxes, and a family with no particular attachment to them and a
+    garage they need back.</p>
+    <p>This is how a great deal of material gets lost, and it's also how some of the best
+    collections get saved. Right now, you're the only person in the world who knows that those
+    boxes exist and what they are.</p>`,
+  gain:['knows_trove'],
+  choices:[
+    {label:"Buy the lot yourself.", to:"l_ebay_buy", cost:{dollars:140}, needMoney:140},
+    {label:"Put him in touch with a repository.", mini:"Broker a donation.", to:"l_ebay_donate"},
+    {label:"Do nothing. It isn't your problem.", to:"l_ebay_nothing"}
+  ]
+},
+l_ebay_buy:{
+  act:"Thread: For sale", title:"It arrives in four days, and you are now an archive.",
+  find:"trove",
+  body:`<p>It's roughly nine hundred sheets of paper in no order whatsoever. Some are in Spanish,
+    some are carbon copies, and some are clearly personal. There are also nine film cans that you
+    have no way of playing.</p>
+    <p>There is no finding aid. There is nobody to ask whether the man who wrote these letters
+    would have wanted them read, and there's no way of proving that any of it is what the seller
+    said it was. Archivists have a word for that last problem. <strong>Provenance</strong> is <em
+    class="def">the record of where a set of papers came from and whose hands it has passed
+    through</em>, and this box has none.</p>
+    <p><strong>Everything an archive does (arrangement, description, provenance, ethics) is now
+    your job</strong>, and you still have a report to write. You have also just moved this material
+    out of everyone else's reach and into a dorm room.</p>`,
+  choices:[
+    {label:"Look for a repository that will take it.", to:"l_ebay_donate"},
+    {label:"Back to the threads.", to:"l_hub"}
+  ]
+},
+l_ebay_donate:{
+  act:"Thread: For sale", title:"You find it a proper home.",
+  find:"trove",
+  body:`<p>It takes a couple of emails to find a repository that collects in this area, and they're
+    extremely interested. It will take them a year to process, and they ask whether you'd write up
+    what you know about where the material came from.</p>
+    <p>You won't get to use most of it in time. But the material becomes public, permanently, with
+    its provenance recorded, because you were the person who happened to be looking.</p>
+    <p><strong>Sometimes the most valuable thing a researcher does with a source is make sure
+    somebody else can use it.</strong> That is not a consolation prize. It is a citation your
+    grandchildren could read.</p>`,
+  gain:['brokered'],
+  choices:[{label:"Back to the threads.", to:"l_hub"}]
+},
+l_ebay_nothing:{
+  act:"Thread: For sale", title:"The listing ends. The boxes go somewhere.",
+  body:`<p>Maybe they go to a dealer, and maybe they go to a dumpster. You'll never know, and
+    neither will anybody else.</p>
+    <p>This is the ordinary way that material disappears. It is not dramatic. It's just that
+    everybody who noticed it was busy.</p>`,
+  gain:['let_it_go'],
+  choices:[{label:"Back to the threads.", to:"l_hub"}]
+},
+
+/* --- Thread: the corporate estate --- */
+l_estate_start:{
+  act:"Thread: The estate", title:"The same company keeps turning up in the declined files.",
+  body:`<p>It's a seed and chemical firm, and its name is on a dozen folders in the Declinations
+    list and on two more among the grants. It still exists, and it has, you discover, a corporate
+    archive.</p>
+    <p>It also has a research fellowship, and the fellowship comes with a room.</p>`,
+  choices:[{label:"Look at the fellowship.", to:"l_estate_look"}]
+},
+l_estate_look:{
+  act:"Thread: The estate", title:"The archive is in a house with a name.",
+  find:"fellowship",
+  body:`<p>It is a former director's country estate, left to the company. Visiting researchers get
+    a bedroom, all their meals, and five days of unrestricted access. The archivist eats dinner
+    with the fellows. There's a photograph of the library on the application page, and it has a
+    ladder on a rail.</p>
+    <p>Applications close in March, and the fellowship runs next summer.</p>
+    <p><strong>You can't use this, and it is still the most useful thing you have found so
+    far.</strong> Research funding runs on a calendar that has nothing whatsoever to do with your
+    deadline, and the only fix is to know that a year earlier than you need to.</p>`,
+  choices:[
+    {label:"Apply anyway, for next year.", to:"l_estate_apply", cost:{weeks:1}},
+    {label:"Note it and move on.", to:"l_hub"}
+  ]
+},
+l_estate_apply:{
+  act:"Thread: The estate", title:"A week of your seven, spent on next summer.",
+  body:`<p>You write it, and it costs you a week you can't spare, for a payoff you can't use this
+    semester.</p>
+    <p>Let's pause on what you're applying <em>for</em>, too. A week of free meals and an archivist
+    at dinner is an enormous research advantage, and it's available because a company decided it
+    was worth paying for. Corporate archives support friendly historians for reasons that aren't
+    sinister, but aren't neutral, either.</p>
+    <p><strong>Access is not only granted. Sometimes it is hosted, and hospitality is a form of
+    influence that is very hard to see from inside a nice bedroom.</strong></p>`,
+  gain:['applied_estate'],
+  choices:[{label:"Back to the threads.", to:"l_hub"}]
+},
+
+/* --- Thread: Buenos Aires --- */
+l_mate_start:{
+  act:"Thread: Buenos Aires", title:"The Spanish-language materials went south.",
+  body:`<p>Your contact in Mexico City mentions it in passing: a related collection in Buenos Aires
+    holds the distribution records for the program's Spanish-language materials across the Southern
+    Cone. You aren't going to Buenos Aires, of course. Nobody is flying you anywhere.</p>
+    <p>A friend of yours happens to be studying abroad there this semester, though, and is willing
+    to go and have a look for you. It takes two weeks of emails to get your friend an appointment
+    and a list of what to ask for.</p>`,
+  choices:[{label:"Send the list.", to:"l_mate_offer"}]
+},
+l_mate_offer:{
+  act:"Thread: Buenos Aires", speaker:{cls:"grp",name:"Your friend, texting from Buenos Aires",initials:"YF"},
+  title:"On the first afternoon, somebody offers your friend mate.",
+  says:`<p>"Okay, I'm in. The reading room has four desks and a kettle."</p>
+    <p>"So every afternoon at about four, they pass around mate, which is this bitter tea that
+    everybody shares out of one gourd, and it takes the better part of an hour. I can give you five
+    afternoons before my exams start. Do I sit with them, or do I keep working?"</p>`,
+  body:`<p>It's your project, so it's your call. They're your friend's afternoons, though.</p>`,
+  choices:[
+    {label:"\"Sit. Drink the mate.\"", mini:"An hour a day, out of five borrowed afternoons.", to:"l_mate_accept"},
+    {label:"\"Say no thanks, and keep working.\"", mini:"The afternoons are for the boxes.", to:"l_mate_decline"}
+  ]
+},
+l_mate_decline:{
+  act:"Thread: Buenos Aires", title:"Your friend works efficiently for five afternoons.",
+  body:`<p>Your friend requests what was on your list, receives what was on your list, and sends
+    you photographs of exactly what was on your list. Not one thing more.</p>
+    <p>The staff are perfectly pleasant the whole time. Nobody mentions the room at the back.</p>`,
+  gain:['declined_mate'],
+  choices:[{label:"Say thank you. You owe your friend dinner.", to:"l_hub"}]
+},
+l_mate_accept:{
+  act:"Thread: Buenos Aires", title:"Three afternoons of drinking mate and getting nothing done.",
+  body:`<p>On day one, the texts you get are impatient. On day two, they're anxious about the boxes
+    nobody is reading. On day three your friend gives in and talks about family, because that's
+    what everyone else is doing.</p>
+    <p>On day four the senior clerk says, out of nowhere: <em>"You know the ministry material isn't
+    in the catalog. It's in the back room. Nobody's described it since the move."</em></p>`,
+  choices:[{label:"\"Ask about the back room!\"", to:"l_mate_payoff"}]
+},
+l_mate_payoff:{
+  act:"Thread: Buenos Aires", title:"The room at the back.",
+  find:"rapport",
+  body:`<p>There are shelves of undescribed material, a reclassification that nobody wrote down,
+    and the name of a retired employee who knows what happened to the rest. None of it is in any
+    catalog. All of it is in that clerk's head, and it has been for thirty years.</p>
+    <p><strong>The three afternoons were not the price of the information. They were the
+    method.</strong> The political scientist Francesca Jensenius spent hours drinking tea with an
+    angry librarian to repair damage she hadn't caused. The sociologist Brooke Harrington, who
+    we'll read for the ethnography session, spent two years in a training program partly so that
+    she'd be someone her subjects would talk to over dinner.</p>
+    <p>Rapport reads like a soft skill until you notice that it's the only thing that opened the
+    door the catalog doesn't describe. (It was your friend's rapport, by the way, and not yours.
+    You'll want to say so in your methods section.)</p>`,
+  choices:[{label:"Back to the threads.", to:"l_hub"}]
+},
+
+/* ---------- ACT VI -- THE RECKONING ---------- */
+a6_decide:{
+  act:"Act VI: The reckoning",
+  title:"You aren't going to get to the bottom of this before December.",
+  body:`<p>That is now simply a fact. What you do about it is the actual research decision, and
+    there's more than one defensible answer.</p>
+    <p><em>Some endings can only be reached if you found things you weren't looking for. If they're
+    grayed out, that's the lesson, not a bug.</em></p>`,
+  endingMenu:true, backTo:"l_hub"
+},
+
+/* ---------- ENDINGS ---------- */
+e_sideways:{ ending:true, tone:"gold", act:"Ending", need:4,
+  teaser:"Something better than the thing you came for",
+  title:"You abandoned the Ledger, and it was the best decision you made.",
+  body:`<p>You went in after a secret document about who decided what. You came out with something
+    nobody is working on, assembled out of the things you tripped over on the way.</p>
+    <p>This is not a consolation prize. It is how a very large share of good historical work
+    actually starts: somebody went looking for one thing, noticed another, and had the sense to
+    follow it.</p>
+    <p><strong>The treasure you were hunting did not exist. The treasure you stumbled into
+    did.</strong> Your predecessor's note was wrong about the Ledger, and right that it was worth
+    going to look. You should feel pretty proud of yourselves.</p>`},
+
+e_films:{ ending:true, tone:"gold", act:"Ending", needFinds:["projector","photos"],
+  teaser:"A project nobody else is doing",
+  title:"Your project is now about the films.",
+  body:`<p>You have four pages of complaint about a broken projector, and a photograph series you
+    now have a very good reason to go and look at. Together they point to an arm of the program
+    that barely appears in the literature. The Foundation was not only distributing seed. It was
+    <em>making films</em> and showing them to farmers.</p>
+    <p>Somebody wrote those scripts, and somebody decided what a modern farmer looked like on
+    screen. That's a question about power that the wheat yield statistics can't touch, and you
+    found it in the least promising document in the folder.</p>
+    <p><strong>Nobody assigns you this.</strong> You get it by reading the boring pages.</p>`},
+
+e_living:{ ending:true, tone:"gold", act:"Ending", needFinds:["family"],
+  teaser:"The record isn't the only thing that survived",
+  title:"You went looking for papers and found people.",
+  body:`<p>You have a scrapbook from a spare room, eleven photographs of its pages, and a Facebook
+    group of 340 people who are the last living link to a program that ended before you were
+    born.</p>
+    <p>Your project is now partly about memory, and not only about the record: what the families
+    kept, what they're proud of, and what the official archive never held because it was never
+    official.</p>
+    <p>It also comes with obligations that the Rockefeller Archive Center never imposed. These
+    people are alive, they didn't volunteer, and they care a great deal about what you write.
+    <strong>The dead are easy to study because they can't object.</strong> You have just found out
+    what the ethics of your method actually cost when the subjects can.</p>`},
+
+e_collector:{ ending:true, tone:"gold", act:"Ending", needFinds:["trove"],
+  teaser:"The evidence was never in an archive at all",
+  title:"You dealt with a garage in Ohio.",
+  body:`<p>It was a garage full of boxes and film cans, belonging to a family who needed the space,
+    and you found it because you followed something you weren't looking for into an online
+    marketplace.</p>
+    <p>Whether you bought it or found it a home, you have discovered the thing that's hardest to
+    see from inside a well-run reading room: <strong>most of the past is not in an
+    archive.</strong> It is in houses, and it survives or doesn't depending on who needed a
+    garage.</p>
+    <p>A finding aid describes what was collected. It cannot describe what was thrown away, and the
+    ratio between those two is the single largest unmeasured quantity in historical research.</p>`},
+
+e_fellowship:{ ending:true, tone:"good", act:"Ending", needFinds:["fellowship"],
+  teaser:"You won't finish this semester. Next summer is another story",
+  title:"There's a way back, and somebody else would be paying.",
+  body:`<p>It is a corporate archive in a country house with a ladder on a rail, with five days of
+    free meals and an archivist who eats dinner with the fellows. Applications close in March, and
+    you can't use any of it this semester.</p>
+    <p>And that's the finding. <strong>Research money runs on a calendar that has nothing to do
+    with your deadline</strong>, and the only fix is to know that a year before you need it. Most
+    scholars who seem to have astonishing access really just have good timing and an old
+    application.</p>
+    <p>Here's one more thing worth carrying with you: that week is hospitality as well as access.
+    Corporate archives fund friendly historians for reasons that are neither sinister nor neutral,
+    and it's very hard to notice that you're being hosted from inside a nice bedroom.</p>`},
+
+e_rapport:{ ending:true, tone:"gold", act:"Ending", needFinds:["rapport"],
+  teaser:"The slowest thing you did was the method",
+  title:"Three afternoons of mate.",
+  body:`<p>Your friend sat down, drank what was offered, talked about family, and spent three
+    afternoons feeling like the favor was being wasted.</p>
+    <p>On the fourth day somebody mentioned the room at the back: undescribed shelves, an
+    unrecorded reclassification, and the name of a retired employee who knows where the rest went.
+    None of it is in any catalog. All of it was in one clerk's head.</p>
+    <p><strong>Rapport reads like a soft skill right up to the moment you notice it's the only
+    thing that opens the door the catalog doesn't describe.</strong> The political scientist
+    Francesca Jensenius drank tea with an angry librarian for hours to repair damage she hadn't
+    caused. The sociologist Brooke Harrington, who we'll read for the ethnography session, spent
+    two years in a training program partly to become someone her subjects would talk to over
+    dinner.</p>
+    <p>The archive is not just the boxes. It is also the people who know where the boxes are.</p>`},
+
+e_narrow:{ ending:true, tone:"good", act:"Ending", need:2,
+  teaser:"A question you can actually answer",
+  title:"You changed the question.",
+  body:`<p>The question is no longer <em>who secretly decided</em>, because you can't see that in
+    seven weeks. Now it's this: <em>how did the Foundation explain its country choices in public,
+    and how does that compare with what it filed internally?</em></p>
+    <p>You can answer that with published annual reports plus one day in a reading room with a
+    specific folder. It is smaller than what you started with, and it's a question you can actually
+    answer with evidence you can actually see.</p>
+    <p>Changing your question to fit your sources is not a retreat. Everyone with experience does
+    it, usually more than once. The ones who don't end up writing conclusions that their evidence
+    can't carry.</p>`},
+
+e_plan:{ ending:true, tone:"good", act:"Ending",
+  title:"You wrote the plan instead.",
+  body:`<p>Your methods section names what you located, as far down as you got: the collection, the
+    series, the subseries, the folder. It states what the finding aid does and doesn't tell you. It
+    lays out the routes to the paper, the twenty-four-week scan and the visit with three days'
+    notice, and it puts dates on them. It says plainly which parts of your question the reachable
+    evidence supports and which parts it can't.</p>
+    <p>You never got to the bottom of it. What you did was show how far you got, what it would cost
+    to go further, and what going further would and wouldn't settle.</p>
+    <p>For a semester project, that is often the most honest deliverable available, and it is the
+    one that lets somebody else pick this up in January.</p>`},
+
+e_donor:{ ending:true, tone:"mixed", act:"Ending",
+  title:"You wrote a good paper about the funders.",
+  body:`<p>It is well sourced: every claim rests on a document, the citations are correct, and the
+    reasoning is careful.</p>
+    <p>It is also, from beginning to end, an account of the Green Revolution as seen from inside
+    the institution that paid for it. That institution's records were cataloged, indexed,
+    preserved, and free, and everybody else's weren't.</p>
+    <p>This is the most seductive failure in archival research, and it never feels like failure,
+    because it feels like being thorough. And it is only a problem if you don't say so.</p>`},
+
+e_surrogate:{ ending:true, tone:"mixed", act:"Ending",
+  title:"You wrote it from the published record.",
+  body:`<p>You used annual reports, published diaries, printed testimony, and the secondary
+    literature. All of it is real, all of it is citable, and none of it requires a reading
+    room.</p>
+    <p>What you have written is an accurate account of <strong>what the Foundation said about
+    itself</strong>. That is a genuine finding as long as the paper says that's what it is, and a
+    misleading one the moment it stands in for what the Foundation did.</p>`},
+
+e_broke:{ ending:true, tone:"bad", act:"Ending",
+  title:"You waited.",
+  body:`<p>You submitted the request. It was free, and the confirmation email was encouraging.</p>
+    <p>December came. The scan didn't.</p>
+    <p>A hundred and twenty business days was in the policy the whole time, and you hoped it didn't
+    mean it. <strong>The binding constraint on archival research is almost never money. It's the
+    calendar</strong>, and the calendar is published.</p>
+    <p>Everything else (the visit, the published reports, the narrowed question) was still
+    available on the day you chose to wait.</p>`}
+};
+
+/* ============================================================
+   Engine
+   ============================================================ */
+const $=id=>document.getElementById(id);
+function setTab(t){
+  ['play','notes','cred'].forEach(k=>{
+    $('panel-'+k).hidden = k!==t;
+    $('tab-'+(k==='cred'?'cred':k)).setAttribute('aria-selected', k===t);
+  });
+}
+function toggleLog(){ logOpen=!logOpen; $('logcard').hidden=!logOpen;
+  $('logbtn').textContent=logOpen?'Hide my route':'Show my route'; }
+
+function costLabel(c){
+  if(!c||(!c.weeks&&!c.dollars)) return {txt:'no cost',cls:'free'};
+  const b=[]; if(c.weeks) b.push(c.weeks+(c.weeks===1?' week':' weeks'));
+  if(c.dollars) b.push('$'+c.dollars);
+  const heavy=(c.weeks||0)>=2||(c.dollars||0)>=100;
+  return {txt:'−'+b.join(', '), cls:heavy?'heavy':'pay'};
+}
+
+function renderMeters(){
+  const wp=Math.max(0,Math.min(100,S.weeks/START.weeks*100));
+  const dp=Math.max(0,Math.min(100,S.dollars/START.dollars*100));
+  const fn=S.finds.size, fp=Math.min(100,fn/6*100);
+  const wl=S.weeks<=2, dl=S.dollars<=30;
+  $('meters').innerHTML=`
+   <div class="meter"><div class="lab">Weeks left</div>
+     <div class="val ${wl?'low':''}">${S.weeks}</div>
+     <div class="bar"><i class="${wl?'low':''}" style="width:${wp}%"></i></div>
+     <div class="note">It's ${today()}</div></div>
+   <div class="meter"><div class="lab">Money</div>
+     <div class="val ${dl?'low':''}">$${S.dollars}</div>
+     <div class="bar"><i class="${dl?'low':''}" style="width:${dp}%"></i></div>
+     <div class="note">Yours, not a grant's</div></div>
+   <div class="meter"><div class="lab">Things you weren't looking for</div>
+     <div class="val gold">${fn}</div>
+     <div class="bar"><i class="gold" style="width:${fp}%"></i></div>
+     <div class="note">${fn?[...S.finds].map(findShort).join(' · '):'Wander and see'}</div></div>`;
+}
+
+function catBlock(c){
+  if(!c) return '';
+  let h='<div class="cat">'+(c.title?'<p class="ttl">'+c.title+'</p>':'');
+  if(c.dl){ h+='<dl>'; c.dl.forEach(([k,v])=>h+='<dt>'+k+'</dt><dd>'+v+'</dd>'); h+='</dl>'; }
+  if(c.tree) h+='<div class="tree">'+c.tree.join('<br>')+'</div>';
+  return h+'</div>';
+}
+function saysBlock(sc){
+  if(!sc.speaker||!sc.says) return '';
+  const said=sc.says.replace(/\{MONEY\}/g,'$'+S.dollars).replace(/\{DATE\}/g,today());
+  return `<div class="says"><div class="who ${sc.speaker.cls||''}">${sc.speaker.initials}</div>
+    <div class="txt"><div class="nm">${sc.speaker.name}</div>${said}</div></div>`;
+}
+function visible(ch){
+  if(ch.requires && !S.flags.has(ch.requires)) return false;
+  if(ch.hideIf && S.flags.has(ch.hideIf)) return false;
+  return true;
+}
+
+/* The last week is for writing. A step that would use it up is locked, the same way
+   the trove locks when the money isn't there, so the clock can never run out by
+   accident. A step that leads straight to an ending is exempt: that is how the scan
+   still costs you the semester. */
+function lockReason(cost,to,needMoney){
+  const w=(cost&&cost.weeks)||0;
+  if(w && w>=S.weeks && !(SC[to]&&SC[to].ending))
+    return {badge:'no time', why:'This takes '+w+(w===1?' week':' weeks')+'. You have '+S.weeks+
+            ' left, and you need the last one to write.'};
+  if(needMoney && S.dollars<needMoney)
+    return {badge:'can\'t afford', why:'You have $'+S.dollars+', and this costs $'+needMoney+'.'};
+  return null;
+}
+
+/* Weeks remaining -> the date it currently is. 7 = Oct. 16, 0 = Dec. 4. */
+const CAL=["December 4","November 27","November 20","November 13",
+           "November 6","October 30","October 23","October 16"];
+const today = () => CAL[Math.max(0,Math.min(7,S.weeks))];
+
+/* The International Affairs Program allocates until it runs out, and it runs out
+   by the middle of November -- which is 3 weeks left on this calendar. */
+const IA_STILL_HAS_MONEY = () => S.weeks >= 4;
+
+function askFunding(){ if(!S.at.startsWith('fund_')) S.returnTo=S.at; go('fund_hub',{}); }
+/* Coming back from the funding loop re-enters a scene the player has already
+   seen, so it stays out of the route log. */
+function resume(){ const t=S.returnTo||'a4_options'; S.returnTo=null; go(t,{},true); }
+
+function go(id,cost,quiet){
+  if(id==='fund_ia'){
+    id = S.flags.has('got_ia_money') ? 'fund_ia_done'
+       : (IA_STILL_HAS_MONEY() ? 'fund_ia_yes' : 'fund_ia_no');
+  }
+  if(cost){ if(cost.weeks) S.weeks=Math.max(0,S.weeks-cost.weeks);
+            if(cost.dollars) S.dollars=Math.max(0,S.dollars-cost.dollars); }
+  const sc=SC[id];
+  if(sc.grant && !S.flags.has('granted_'+id)){
+    if(sc.grant.dollars) S.dollars += sc.grant.dollars;
+    S.flags.add('granted_'+id);
+  }
+  if(LEADS.some(L=>L.to===id)) S.flags.add('lead_'+id);
+  if(sc.gain) sc.gain.forEach(f=>S.flags.add(f));
+  if(sc.find) S.finds.add(sc.find);
+  if(sc.sources) sc.sources.forEach(s=>S.sources.add(s));
+  S.at=id; if(!quiet) log.push(sc.title);
+  render();
+}
+
+function endingUnlocked(k){
+  const e=SC[k];
+  if(e.needFinds) return e.needFinds.every(f=>S.finds.has(f));
+  if(e.need) return S.finds.size>=e.need;
+  return true;
+}
+function endingWhy(k){
+  const e=SC[k];
+  if(e.needFinds) return 'Needs: '+e.needFinds.map(findShort).join(' + ');
+  if(e.need) return 'Needs '+e.need+' things you weren\'t looking for';
+  return '';
+}
+
+function checkAnswer(){
+  const v=($('ans').value||'').trim().toLowerCase().replace(/[^0-9.]/g,'');
+  const ok=SC[S.at].prompt.answer.some(a=>a===v);
+  const fb=$('feedback');
+  if(ok){ S.flags.add('went_live');
+    fb.innerHTML='<p style="color:var(--good);font-weight:600;margin:10px 0 0">That\'s the real number, from the real catalog. Everything else here is a reconstruction. That wasn\'t.</p>';
+    // Only move on if the player is still on this scene when the pause ends.
+    setTimeout(()=>{ if(S.at==='a3_excursion') go('a4_options'); },1400);
+  } else {
+    fb.innerHTML='<p style="color:var(--warm);margin:10px 0 0">Not quite. You want the size of the whole collection, not of one series. Or you can skip below.</p>';
+  }
+}
+
+function planText(){
+  const s=[...S.sources], f=[...S.finds];
+  // The plan names the folder only for a player who found it, in the catalog or in person.
+  const located=S.flags.has('found_folder')||S.flags.has('visited');
+  return [
+'ARCHIVAL ACCESS PLAN: IA 280',
+'Question: how the Rockefeller Foundation chose countries for its',
+'agricultural programs in the 1960s, and who decided.','',
+'TARGET MATERIAL',
+'  Collection : J. George Harrar papers (21.57 cubic feet)',
+(located
+ ? '  Series     : 1, Correspondence\n  Subseries  : 1_2, Confidential (23 folders)\n  Folder     : "1964 January-June"'
+ : '  Folder     : [ Not located. You never opened the folder list for the\n               Confidential subseries, so this plan has no target yet. ]'),
+'  Repository : Rockefeller Archive Center, Sleepy Hollow, New York',
+'  Access     : Open for research. Not digitized.','',
+'CITATION FORM',
+(located
+ ? '  J. George Harrar papers, Series 1: Correspondence, Subseries 1_2:\n  Correspondence - Confidential, folder "1964 January-June",\n  Rockefeller Archive Center, Sleepy Hollow, New York.'
+ : '  [ You can\'t cite a folder you haven\'t located. ]'),'',
+'ROUTES',
+'  Scan request : free; up to 120 business days (~24 weeks). Arrives',
+'                 after the December deadline. Not viable this semester.',
+'  Reading room : appointment, 3 days notice, Mon-Fri 9:30-5.',
+'                 ~2 hours each way. Pencils only. One folder at a time.','',
+'SOURCES REACHED',
+(s.length? s.map(x=>'  - '+x).join('\n') : '  - none'),'',
+'FOUND WITHOUT LOOKING FOR IT',
+(f.length? f.map(x=>'  - '+FINDS[x]).join('\n') : '  - nothing; I didn\'t wander'),'',
+'BUDGET AT CLOSE',
+'  Weeks : '+S.weeks+' of '+START.weeks,
+'  Money : $'+S.dollars+' of $'+START.dollars,'',
+'DECLARED LIMITATION',
+(S.flags.has('saw_silence')
+ ? '  The people this program was aimed at left no archive of their\n  own. Any account built from these sources is written from the\n  funders\' side, and the paper must say so.'
+ : '  [ Not yet identified: who created the records you are using,\n  and whose records do not exist? ]')
+].join('\n');
+}
+function copyPlan(){
+  navigator.clipboard && navigator.clipboard.writeText(planText());
+  const b=$('copybtn'); if(b){b.textContent='Copied'; setTimeout(()=>b.textContent='Copy my access plan',1500);}
+}
+
+function epilogue(){
+  const f=S.flags, out=[], missed=[];
+  if(f.has('saw_silence')) out.push(`You went looking for the farmers' records and found that there aren't any. That's the most important thing in this exercise, and most runs never reach it.`);
+  else missed.push(`You never looked for the farmers' own records. If you play again, go and find out what's there.`);
+  if(!f.has('visited')) missed.push(`You never set foot in a reading room. Most of what's in an archive has only ever been read that way.`);
+  if(!f.has('left_rac')) missed.push(`You never tried another repository. The Rockefeller Archive Center's catalog is free, indexed, and in English. Most of the world's aren't, and that difference isn't an accident.`);
+  if(S.finds.size===0) missed.push(`You found nothing you weren't looking for, because you never wandered. That's the whole lesson, and it cost you most of the best endings.`);
+  if(f.has('assumed')) out.push(f.has('confidential_read')
+    ? `At first you skipped the Confidential subseries on an assumption. Then you checked the access note, and it had said "Open for research" the whole time.`
+    : `You skipped the Confidential subseries on an assumption. It was open the whole time.`);
+  else if(f.has('confidential_read')) out.push(`You checked the access note instead of assuming, and found "Open for research." So <em>Confidential</em> turned out to be the files' original label, not a rule about you.`);
+  if(f.has('sheaf_zero')) out.push(`You searched for the legend by name and got zero results. Archives are cataloged in the words of the filing clerk, not the words of the rumor.`);
+  if(f.has('scan_math')) out.push(`You worked out that a free scan costs twenty-four weeks. Cost is not only money.`);
+  if(f.has('visited')) out.push(`You went in person, which is the only way anyone has ever read most of what's in an archive.`);
+  if(f.has('offsite_lesson')) out.push(`You learned that boxes can live off-site and need to be requested <em>before</em> you travel. That's the classic wasted trip.`);
+  if(f.has('photo_disaster')) out.push(`You photographed 240 pages without capturing one folder label, so none of it can be cited.`);
+  if(f.has('photo_good')) out.push(`You photographed the label before the pages, so everything you took can be footnoted.`);
+  if(f.has('saw_boring')) out.push(`You found that most archival material is routine paperwork, and that the good sentence was on page 26, unadvertised.`);
+  if(f.has('vocab')) out.push(`You learned that a finding aid speaks the vocabulary of the records, not yours.`);
+  if(f.has('farmers_early')) out.push(`You searched for the farmers inside the funder's records and found them only as subjects, described by somebody else.`);
+  if(f.has('librarian')||f.has('footnotes')) out.push(`You started cheaply, with a librarian or a footnote, which is how experienced researchers find archives.`);
+  if(f.has('burned_archivist')) out.push(`You spent a week cold-emailing an archivist with a question you couldn't yet ask precisely.`);
+  if(f.has('china_parallel')) out.push(`You wandered onto the wrong continent and came out with a comparison case.`);
+  if(f.has('catch22')) out.push(`You met the credential loop: you need the pass to meet the person who issues the passes.`);
+  if(f.has('positionality')) out.push(`You worked with someone who was already there, and she reached a door and a rumor that you couldn't.`);
+  if(f.has('accepted_absence')) out.push(`You wrote that no records survive because four officials said so. The records were there the whole time.`);
+  if(f.has('found_absence')) out.push(`You wouldn't take "it doesn't exist" for an answer, and the records turned up uncataloged in a back room.`);
+  if(f.has('took_compiled')) out.push(f.has('checked_compiled')
+    ? `You built on a summary table first and checked it second, and two of the three pages you checked disagreed with it.`
+    : `You built on a summary table without asking who made it, from what, or why.`);
+  else if(f.has('checked_compiled')) out.push(`You spot-checked the compiled table and caught the errors before your reader did.`);
+  if(f.has('hundred_percent')) out.push(`You got hold of authentic, hard-won data in which every row read 100%.`);
+  if(f.has('inherited_trust')&&!f.has('lost_archivist')) out.push(`You took the blame for somebody else's bad behavior without arguing, and you kept the archivist on your side.`);
+  if(f.has('lost_archivist')) out.push(`You were right about whose fault it was, and you spent the day without the twenty years of knowledge that lives in the archivist's head and in no finding aid.`);
+  if(f.has('went_live')) out.push(`You checked the real catalog yourself.`);
+  // --- the threads that take you off the map ---
+  if(S.finds.has('reels')) out.push(`You asked about the film reels and became the first person ever to ask. Not everything unread is secret. Most of it is simply unrequested.`);
+  if(S.finds.has('family')) out.push(`You found a scrapbook that survives because somebody's mother kept it. It's an archive nobody cataloged, one estate cleanout away from a dumpster.`);
+  if(f.has('lead_l_fb_start')) out.push(`You went looking for living people, which turned your archival project into human subjects research, with consent attached. The dead are easy to study because they can't object.`);
+  if(S.finds.has('trove')) out.push(`You dealt with a garage in Ohio and learned the thing a good reading room hides: most of the past isn't in an archive at all.`);
+  if(f.has('brokered')) out.push(`You got the material to a repository, so it becomes public and cataloged instead of sitting with you. Sometimes the best thing a researcher does with a source is make sure somebody else can use it.`);
+  if(f.has('let_it_go')) out.push(`You left the boxes to their fate. That's the ordinary way material disappears. It isn't dramatic. It's just that everyone who noticed was busy.`);
+  if(f.has('knows_trove')&&!S.finds.has('trove')) out.push(`You found out that six more boxes exist in a family garage, and you did nothing with that. You're still the only person who knows.`);
+  if(S.finds.has('fellowship')) out.push(`You found a funded week at a corporate archive that you can't use this semester. Research money runs on a calendar that has nothing to do with your deadline.`);
+  if(f.has('applied_estate')) out.push(`You spent a week applying for next summer, and you noticed that being hosted is a form of access that's hard to see from inside a nice bedroom.`);
+  if(S.finds.has('rapport')) out.push(`You told your friend to sit down and drink the mate. It felt like three wasted afternoons, and it got you the one thing no catalog records. Rapport is a method, not a courtesy.`);
+  if(f.has('declined_mate')) out.push(`You told your friend to skip the mate and keep working. You got exactly what was on your list and nothing else, and nobody mentioned the room at the back.`);
+  if(f.has('lead_l_film_start')&&!S.finds.has('reels')) missed.push(`You opened the film thread but never asked the archivist about the reels.`);
+  // --- money ---
+  if(f.has('got_ia_money')) out.push(`You asked the International Affairs Program early and got $100 in about the time it takes to read an eligibility page. Small local money is fast, and it's exactly the money undergraduates fail to ask for.`);
+  if(f.has('missed_ia_money')) out.push(`You asked the Program too late, and the money was gone. It went to four people who asked in the first week of the semester. Budgets run on their own calendar, not on the moment you realize you need something.`);
+  if(f.has('asked_college')) out.push(`You found the College's research fund and discovered that it runs six months ahead. The fix isn't to be cleverer. It's to know in September what you'll need in March.`);
+  if(f.has('applied_college')) out.push(`You spent a week applying for next semester, and you wrote a good application, because by then you knew what an archival project costs. The application you can write well is the one you no longer urgently need.`);
+  if(!f.has('got_ia_money') && !f.has('missed_ia_money') && !f.has('asked_college'))
+    missed.push(`You never asked anyone for money. There was $100 available from the International Affairs Program for the first few weeks, and you didn't ask for it.`);
+  const opened=LEADS.filter(L=>f.has('lead_'+L.to)).length;
+  if(opened===0 && S.finds.size>0) missed.push(`You collected finds and never followed one anywhere. Some of them open threads that lead out of your original project entirely, which is what my colleagues who work in archives mean when they say the best material is the material they weren't looking for.`);
+  else if(opened && opened<LEADS.length) missed.push('You followed '+opened+' of '+LEADS.length+' threads. The others go somewhere different.');
+  return out.concat(missed);
+}
+
+function render(){
+  renderMeters();
+  const sc=SC[S.at], st=$('stage');
+  let h='<p class="kicker">'+(sc.act||'')+'</p><p class="q">'+sc.title+'</p>';
+  const prose=t=>'<div class="body">'+(t||'')
+        .replace(/\{MONEY\}/g,'$'+S.dollars)
+        .replace(/\{DATE\}/g,today())+'</div>';
+  h+=saysBlock(sc);
+  if(sc.pic) h+=pic(sc.pic);
+  // A scene with a body2 wraps its card in prose: body, then the card, then body2.
+  if(sc.body2) h+=prose(sc.body);
+  if(sc.cat) h+=catBlock(sc.cat);
+  if(sc.find) h+='<div class="found"><div class="ft">Something you weren\'t looking for</div><strong>'+FINDS[sc.find]+'</strong></div>';
+  h+=prose(sc.body2 || sc.body);
+
+  if(sc.prompt){
+    h+='<div class="btnrow"><input type="text" id="ans" placeholder="'+sc.prompt.placeholder+'" '+
+       'onkeydown="if(event.key===\'Enter\')checkAnswer()">'+
+       '<button class="primary" onclick="checkAnswer()">Check</button></div><div id="feedback"></div>';
+  }
+
+  if(sc.leadMenu){
+    h+='<div class="choices">';
+    LEADS.forEach(L=>{
+      const ok=S.finds.has(L.need), done=S.flags.has('lead_'+L.to);
+      const cl=costLabel(L.cost);
+      const lk = ok ? lockReason(L.cost, L.to) : null;   // found, but no weeks to spend on it
+      const open = ok && !lk;
+      const shown = ok ? L.label : L.teaser;
+      h+='<button class="'+(open?'':'locked')+'" '+(open?'onclick=\'go("'+L.to+'",'+JSON.stringify(L.cost||{})+')\'':'disabled')+'>'+
+         '<span><span class="cl">'+shown+(done?' ✓':'')+'</span>'+
+         (ok?(lk?'<span class="cm">'+lk.why+'</span>':'')
+            :'<span class="cm">Opens if you find: '+findShort(L.need)+'</span>')+'</span>'+
+         (open?'<span class="cost '+cl.cls+'">'+cl.txt+'</span>'
+              :'<span class="cost lock">'+(lk?lk.badge:'locked')+'</span>')+'</button>';
+    });
+    h+='<button onclick=\'go("a6_decide",{})\'><span><span class="cl">Enough. Decide what this project is.</span></span><span class="cost free">no cost</span></button>';
+    h+='</div>';
+  }
+
+  if(sc.endingMenu){
+    const all=['e_sideways','e_films','e_living','e_collector','e_rapport','e_fellowship','e_narrow','e_plan','e_donor','e_surrogate'];
+    const order=all.filter(k=>endingUnlocked(k)).concat(all.filter(k=>!endingUnlocked(k)));
+    h+='<div class="choices">';
+    order.forEach(k=>{
+      const e=SC[k], ok=endingUnlocked(k), why=endingWhy(k);
+      const shown = ok ? e.title : (e.teaser || 'A path you haven\'t opened');
+      h+='<button class="'+(ok?'':'locked')+'" '+(ok?'onclick=\'go("'+k+'",{})\'':'disabled')+'>'+
+         '<span><span class="cl">'+shown+'</span>'+(!ok?'<span class="cm">'+why+'</span>':'')+'</span>'+
+         (ok?'<span class="cost free">open</span>':'<span class="cost lock">locked</span>')+'</button>';
+    });
+    if(sc.backTo) h+='<button onclick=\'go("'+sc.backTo+'",{})\'><span><span class="cl">Wait. Go back and follow a thread.</span></span><span class="cost free">no cost</span></button>';
+    h+='</div>';
+  }
+
+  if(sc.ending){
+    st.className='card';
+    h+='<div class="verdict '+(sc.tone||'')+'"><strong>What this run showed you</strong><ul>'+
+       epilogue().map(e=>'<li>'+e+'</li>').join('')+'</ul></div>';
+    if(S.finds.size){
+      h+='<div class="found"><div class="ft">Things you weren\'t looking for</div><ul style="margin:4px 0 0;padding-left:18px">'+
+         [...S.finds].map(f=>'<li>'+FINDS[f]+'</li>').join('')+'</ul></div>';
+    }
+    h+='<h2>Your access plan</h2><div class="plan">'+planText().replace(/</g,'&lt;')+'</div>';
+    h+='<div class="btnrow"><button class="primary" id="copybtn" onclick="copyPlan()">Copy my access plan</button>'+
+       '<button onclick="restart()">Play again, differently</button></div>';
+  } else st.className='card';
+
+  if(sc.choices){
+    h+='<div class="choices">';
+    sc.choices.filter(visible).forEach(c=>{
+      const cl=costLabel(c.cost);
+      if(c.resume){
+        h+='<button onclick="resume()"><span><span class="cl">'+c.label+'</span>'+
+           (c.mini?'<span class="cm">'+c.mini+'</span>':'')+'</span><span class="cost free">no cost</span></button>';
+        return;
+      }
+      const lk = lockReason(c.cost, c.to, c.needMoney);
+      h+='<button class="'+(lk?'locked':'')+'" '+
+         (lk?'disabled':'onclick=\'go("'+c.to+'",'+JSON.stringify(c.cost||{})+')\'')+'>'+
+         '<span><span class="cl">'+c.label+'</span>'+
+         (lk?'<span class="cm">'+lk.why+'</span>'
+            :(c.mini?'<span class="cm">'+c.mini+'</span>':''))+'</span>'+
+         '<span class="cost '+(lk?'lock':cl.cls)+'">'+(lk?lk.badge:cl.txt)+'</span></button>';
+    });
+    h+='</div>';
+  }
+  st.innerHTML=h;
+  const fb=$('fundbtn');
+  fb.hidden = !!sc.ending || S.at.indexOf('fund_')===0;
+  fb.textContent = S.flags.has('got_ia_money') ? 'Ask for more funding' : 'Ask for research funding';
+  $('logbody').innerHTML=log.map(l=>'<li>'+l+'</li>').join('');
+}
+
+function renderCredits(){
+  $('credlist').innerHTML=Object.values(PIC).map(p=>'<li><code>'+p.f+'</code>: '+p.cap+'</li>').join('');
+}
+function restart(){ reset(); render(); }
+renderCredits(); reset(); render();
+</script>
+</body>
+</html>
